@@ -87,7 +87,7 @@ var jsPsychFlanker = (function (jspsych) {
           };
 
           let stim = createFlanker(trial.stimulus);
-          let new_html = `<div class="flanker-container"><div class="score">${score}</div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
+          let new_html = `<div class="flanker-container"><div class="score">Your Score:<br><br><b>${score}</b></div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
           // add prompt
           if (trial.prompt !== null) {
               new_html += trial.prompt;
@@ -131,7 +131,7 @@ var jsPsychFlanker = (function (jspsych) {
                 errors++;
               }
               stim = createFlanker(trial.stimulus);
-              new_html = `<div class="flanker-container"><div class="score">${score}</div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
+              new_html = `<div class="flanker-container"><div class="score">Your Score:<br><br><b>${score}</b></div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
               display_element.innerHTML = new_html;
               // only record the first response
               if (response.key == null) {

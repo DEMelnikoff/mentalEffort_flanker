@@ -242,9 +242,15 @@ const exp = (function() {
     let target_score;
     let win;
 
-    const MakeTimeline = function(round) {
+    const MakeTimeline = function(round, isPractice) {
 
-        console.log(settings.effort[round]);
+
+        const fixation = {
+            type:jsPsychHtmlKeyboardResponse,
+            stimulus: `<div class="outcome-container-lose"><div class="outcome-text"><p>+</p></div></div>`,
+            choices: "NO_KEYS",
+            trial_duration: 500,
+        };
 
         const flanker = {
             type: jsPsychFlanker,
@@ -301,12 +307,19 @@ const exp = (function() {
             trial_duration: 2500,
         };
 
-        this.timeline = [flanker, feedback, outcome];
-        this.repetitions = 10;
+        if (!isPractice) {
+            this.timeline = [fixation, flanker, feedback, outcome];
+            this.repetitions = 10;
+        } else {
+            this.timeline = [fixation, flanker];
+            this.repetitions = 10;            
+        }
+
+
     };
 
-    const flanker_timeline_1 = new MakeTimeline(0);
-    const flanker_timeline_2 = new MakeTimeline(1);
+    const flanker_timeline_1 = new MakeTimeline(0, true);
+    const flanker_timeline_2 = new MakeTimeline(1, true);
 
 
    /*
