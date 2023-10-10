@@ -6,69 +6,43 @@ const exp = (function() {
     let p = {};
 
     let settings = {
-        nSpins: 10,
-        hitRate: .9,
-        effortOrder: ['highEffort_first', 'highEffort_second'][Math.floor(Math.random() * 2)],
-        miOrder: ['highMI_first', 'highMI_second'][Math.floor(Math.random() * 2)],
+        hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
+        adjustment: [0, .4][Math.floor(Math.random() * 2)],
     };
 
-    console.log(settings.effortOrder, settings.miOrder)
+    settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
+    settings.hitRates[1] = Math.round((settings.hitRates[1] - settings.adjustment) * 100) / 100;
+
+    if (settings.hitRates[0] < settings.hitRates[1]) {
+        settings.effort = ['easy', 'hard'];
+    } else {
+        settings.effort = ['hard', 'easy'];
+    };
 
     let text = {};
 
-    if (settings.effortOrder == 'highEffort_first') {
+    if (settings.effort[0] == 'hard') {
         text.example_1 = ">><>>";
-        text.stimInst_1 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction"
-        text.stimInst_2 = "the middle arrow will always point in the same direction as the other four arrows"
-        text.speed1_r1 = "<strong> as fast as possible</strong>";
-        text.speed2_r1 = "If you do not tap your right arrow as fast as possible, the wheel will not build enough momentum to spin.";
-        text.speed1_r2 = "<strong>at a moderate pace</strong>";
-        text.speed2_r2 = "If you tap your right arrow either too quickly or too slowly, the wheel will not build enough momentum to spin.";
-    } else if (settings.effortOrder == 'highEffort_second') {
-        text.example_1 = "<<<<<"
-        text.stimInst_1 = "the middle arrow will always point in the same direction as the other four arrows"
-        text.stimInst_2 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction"
-        text.speed1_r1 = "<strong>at a moderate pace</strong>";
-        text.speed2_r1 = "If you tap your right arrow either too quickly or too slowly, the wheel will not build enough momentum to spin.";
-        text.speed1_r2 = "<strong> as fast as possible</strong>";
-        text.speed2_r2 = "If you do not tap your right arrow as fast as possible, the wheel will not build enough momentum to spin.";
+        text.stimInst_1 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction";
+        text.stimInst_2 = "the middle arrow will always point in the same direction as the other four arrows";
+    } else if (settings.effort[0] == 'easy') {
+        text.example_1 = "<<<<<";
+        text.stimInst_1 = "the middle arrow will always point in the same direction as the other four arrows";
+        text.stimInst_2 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction";
     };
 
     jsPsych.data.addProperties({
-        spins_per_wheel: settings.nSpins,
-        effort_order: settings.effortOrder,
-        mi_order: settings.miOrder,
+        hitRate_1: settings.hitRates[0],
+        hitRate_2: settings.hitRates[1],
+        effort_1: settings.effort[0],
+        effort_2: settings.effort[1],
     });
-
-    // define each wedge
-    const wedges = {
-        one: {color:"#fe0000", label:"1"},
-        two: {color:"#800001", label:"2"},
-        three: {color:"#fe6a00", label:"3"},
-        four: {color:"#803400", label:"4"},
-        five: {color:"#0094fe", label:"5"},
-        six: {color:"#806b00", label:"6"},
-        seven: {color:"#00fe21", label:"7"},
-        eight: {color:"#007f0e", label:"8"},
-        nine: {color:"#ffd800", label:"9"},
-        ten: {color:"#00497e", label:"10"},
-        eleven: {color:"#0026ff", label:"11"},
-        twelve: {color:"#001280", label:"12"},
-        thirteen: {color:"#b100fe", label:"13"},
-    };
 
    /*
     *
     *   INSTRUCTIONS
     *
     */
-
-    const convertStringToHTML = htmlString => {
-        const parser = new DOMParser();
-        const html = parser.parseFromString(htmlString, 'text/html');
-
-        return html;
-    }
 
 
     function MakeAttnChk(settings, round) {
@@ -148,8 +122,8 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p><strong>Practice is now complete!</strong></p>
-                        <p>Remember: your goal is to earn as many points as possible across the two rounds of Spin the Wheel.<br>You'll
-                        find out how many points you earned after both rounds are complete.</p>`
+                        <p>Remember: your goal is to earn as many points as possible across the two rounds of Left or Right.<br>
+                        You'll find out how many points you earned after both rounds are complete.</p>`
                     },
                 ],
 
@@ -175,42 +149,7 @@ const exp = (function() {
         this.timeline = [practiceComplete, instLoop, readyToPlay];
     }
 
-    function MakePracticeWheel(text, round) {
 
-        let speedText = (round == 1) ? text.speed1_r1 : text.speed1_r2;
-
-        const practiceWheel_1 = {
-            type: jsPsychCanvasButtonResponse,
-            prompt: `<div class='spin-instructions'>
-            <p>Repeatedly tap your right arrow ${speedText} to build momentum.
-            Once you build enough momentum, you'll see a "Ready!" message at the center of the wheel,
-            which means you can spin the wheel by pressing your spacebar. Once you spin the wheel, you can stop tapping your right arrow.</p>
-            <p>Practice spinning by (1) tapping your right arrow ${speedText} and then (2) pressing your spacebar when the "Ready!" message appears.</p>
-            </div>`,
-            stimulus: function(c, spinnerData) {
-                dmPsych.spinner(c, spinnerData, [wedges.three, wedges.three, wedges.five, wedges.five], jsPsych.timelineVariable('targetPressTime'), [0], 1);
-            },
-            nSpins: 1,
-            canvas_size: [500, 500],
-            post_trial_gap: 500,
-        };
-
-        const practiceWheel_2 = {
-            type: jsPsychCanvasButtonResponse,
-            prompt: `<div class='spin-instructions'>
-                <p>Great job! Now, spin the wheel a few more time to get the hang of it. Remember:</p>
-                <p>Spin the wheel by (1) tapping your right arrow ${speedText} and then (2) pressing your spacebar when the "Ready!" message appears.</p>
-                <p>Once you spin the wheel, you can stop tapping your right arrow.</p>
-                </div>`,
-            stimulus: function(c, spinnerData) {
-                dmPsych.spinner(c, spinnerData, [wedges.three, wedges.three, wedges.five, wedges.five], jsPsych.timelineVariable('targetPressTime'), [0, 0, 0], 3);
-            },
-            nSpins: 3,
-            canvas_size: [500, 500],
-        };
-
-        this.timeline = [practiceWheel_1, practiceWheel_2];
-    };
 
     p.consent = {
         type: jsPsychExternalHtml,
@@ -285,10 +224,6 @@ const exp = (function() {
         button_label_finish: 'Next'    
     };
 
-    const practiceWheels_r1 = new MakePracticeWheel(text, 1);
-
-    const practiceWheels_r2 = new MakePracticeWheel(text, 2);
-
     const attnChk1 = new MakeAttnChk(settings, 1);
 
     const attnChk2 = new MakeAttnChk(settings, 2);
@@ -300,48 +235,6 @@ const exp = (function() {
     *
     */
 
-    function makeTimelineVariables(settings, round) {
-
-        // array indiciating whether or not the outcome of each spin is guaranteed
-        let guaranteedOutcome = new Array(settings.nSpins).fill(0);
-
-        // set sectors, ev, sd, and mi
-        let sectors, ev, sd, mi;
-        if (settings.miOrder == 'highMI_first' && round == 1 || settings.miOrder == 'highMI_second' && round == 2) {
-            sectors = [ wedges.two, wedges.four, wedges.seven, wedges.ten ];
-            ev = 5.75;
-            sd = 3.5;
-            mi = 2;
-        } else if (settings.miOrder == 'highMI_first' && round == 2 || settings.miOrder == 'highMI_second' && round == 1) {
-            sectors = [ wedges.four, wedges.four, wedges.four, wedges.eleven ];
-            ev = 5.75;
-            sd = 3.5;
-            mi = .81;
-        };
-
-        // set target time between button presses
-        let targetPressTime;
-        if (settings.effortOrder == 'highEffort_first' && round == 1 || settings.effortOrder == 'highEffort_second' && round == 2) {
-            targetPressTime = [0, .18];
-        } else if (settings.effortOrder == 'highEffort_first' && round == 2 || settings.effortOrder == 'highEffort_second' && round == 1) {
-            targetPressTime = [.2, .75];
-        };
-
-        let timelineVariables = [{round: round, sectors: sectors, mi: mi, ev: ev, sd: sd, targetPressTime: targetPressTime, guaranteedOutcome: guaranteedOutcome}];
-
-        return timelineVariables;
-    };
-
-    const wheel = {
-        type: jsPsychCanvasButtonResponse,
-        stimulus: function(c, spinnerData) {
-            dmPsych.spinner(c, spinnerData, jsPsych.timelineVariable('sectors'), jsPsych.timelineVariable('targetPressTime'), jsPsych.timelineVariable('guaranteedOutcome'), settings.nSpins);
-        },
-        nSpins: settings.nSpins,
-        canvas_size: [500, 500],
-        post_trial_gap: 1000,
-        data: {round: jsPsych.timelineVariable('round'), mi: jsPsych.timelineVariable('mi'), targetPressTime: jsPsych.timelineVariable('targetPressTime'), sectors: jsPsych.timelineVariable('sectors'), ev: jsPsych.timelineVariable('ev'), sd: jsPsych.timelineVariable('sd')},
-    };
 
     // temporary variables for flanker task
 
@@ -349,64 +242,71 @@ const exp = (function() {
     let target_score;
     let win;
 
-    const flanker = {
-        type: jsPsychFlanker,
-        stimulus: 'hard',
-        response_ends_trial: false,
-        trial_duration: 10000,
-        choices: ['q', 'p'],
-        on_finish: function(data) {
-            score_feedback = data.score;
-        }
+    const MakeTimeline = function(round) {
+
+        console.log(settings.effort[round]);
+
+        const flanker = {
+            type: jsPsychFlanker,
+            stimulus: settings.effort[round],
+            response_ends_trial: false,
+            trial_duration: 10000,
+            choices: ['q', 'p'],
+            on_finish: function(data) {
+                score_feedback = data.score;
+            },
+        };
+
+        const feedback = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                win = Math.random() < settings.hitRates[round];
+                if (score_feedback < 6) {
+                    win = false;
+                };
+                let delta = Math.floor(Math.random() * 5 + 1);
+                if (win) {
+                    target_score = Math.max(0, score_feedback - delta);
+                } else {
+                    target_score = score_feedback + delta;
+                };
+                let html = `<div class="flanker-container"><div class="feedback-text"><p>Your Score: <strong>${score_feedback}</strong></p><p>Target Score: <strong>${target_score}</strong></p></div></div>`;
+                return html;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 2500,
+            on_finish: function(data) {
+                data.score = score_feedback;
+                data.target_score = target_score;
+                data.outcome = win;
+            },
+        };
+
+        const outcome = {
+            type:jsPsychHtmlKeyboardResponse,
+            stimulus: function() {
+                if (win) {
+                    html = `<div class="outcome-container-win">
+                                <img src="/img/coins.jpg">
+                                <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+10</span></div>
+                            </div>`
+                } else {
+                    html = `<div class="outcome-container-lose">
+                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">+0</span></div>
+                            </div>`
+                };
+                return html;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 2500,
+        };
+
+        this.timeline = [flanker, feedback, outcome];
+        this.repetitions = 10;
     };
 
-    const feedback = {
-        type:jsPsychHtmlKeyboardResponse,
-        stimulus: function() {
-            win = Math.random() < settings.hitRate;
-            let delta = Math.floor(Math.random() * 5 + 1);
-            if (win) {
-                target_score = score_feedback - delta;
-            } else {
-                target_score = score_feedback + delta;
-            };
-            let html = `<div class="flanker-container"><div class="feedback-text"><p>Your Score: <strong>${score_feedback}</strong></p><p>Target Score: <strong>${target_score}</strong></p></div></div>`;
-            return html;
-        },
-        choices: "NO_KEYS",
-        trial_duration: 2500,
-        on_finish: function(data) {
-            data.score = score_feedback;
-            data.target_score = target_score;
-            data.outcome = win;
-        }
-    };
-
-    const outcome = {
-        type:jsPsychHtmlKeyboardResponse,
-        stimulus: function() {
-            if (win) {
-                html = `<div class="outcome-container-win">
-                            <img src="/img/coins.jpg">
-                            <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+10</span></div>
-                        </div>`
-            } else {
-                html = `<div class="outcome-container-lose">
-                            <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">+0</span></div>
-                        </div>`
-            };
-            return html;
-        },
-        choices: "NO_KEYS",
-        trial_duration: 2500,
-    };
-
-    const flanker_timeline = {
-        timeline: [flanker, feedback, outcome],
-        repetitions: 10,
-    };
-
-
+    const flanker_timeline_1 = new MakeTimeline(0);
+    const flanker_timeline_2 = new MakeTimeline(1);
 
 
    /*
@@ -548,14 +448,12 @@ const exp = (function() {
 
     // timeline: first wheel
     p.wheel_1 = {
-        timeline: [flanker_timeline, attnChk1, wheel, new MakeFlowQs(1), new MakeEnjoyQs(1), new MakeEffortQs(1), new MakeMeaningQs(1)],
-        timeline_variables: makeTimelineVariables(settings, 1),
+        timeline: [flanker_timeline_1, attnChk1, new MakeFlowQs(1), new MakeEnjoyQs(1), new MakeEffortQs(1), new MakeMeaningQs(1)],
     };
 
     // timeline: second wheel
     p.wheel_2 = {
-        timeline: [...practiceWheels_r2.timeline, attnChk2, wheel, new MakeFlowQs(2), new MakeEnjoyQs(2), new MakeEffortQs(2), new MakeMeaningQs(2)],
-        timeline_variables: makeTimelineVariables(settings, 2),
+        timeline: [flanker_timeline_2, attnChk2, new MakeFlowQs(2), new MakeEnjoyQs(2), new MakeEffortQs(2), new MakeMeaningQs(2)],
     };
 
    /*
