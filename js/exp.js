@@ -390,13 +390,13 @@ const exp = (function() {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
                 let multiplier;
-                if (score_feedback > 5) {
+                if (score_feedback > 4) {
                     multiplier = outcomeArray[trial];
                 } else {
                     multiplier = 1;
                 };
                 multiplier == 1 ? win = false : win = true;
-                let delta = Math.floor(Math.random() * 5 + 1) * multiplier;
+                let delta = Math.floor(Math.random() * 4 + 1) * multiplier;
                 target_score = Math.max(0, score_feedback + delta);
                 console.log(outcomeArray, trial, multiplier);
                 let html = `<div class="flanker-container"><div class="feedback-text"><p>Your Score: <strong>${score_feedback}</strong></p><p>Target Score: <strong>${target_score}</strong></p></div></div>`;
