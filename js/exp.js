@@ -389,7 +389,12 @@ const exp = (function() {
         const feedback = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
-                let multiplier = outcomeArray[trial];
+                let multiplier;
+                if (score_feedback > 5) {
+                    multiplier = outcomeArray[trial];
+                } else {
+                    multiplier = 1;
+                };
                 multiplier == 1 ? win = false : win = true;
                 let delta = Math.floor(Math.random() * 5 + 1) * multiplier;
                 target_score = Math.max(0, score_feedback + delta);
@@ -730,7 +735,7 @@ const exp = (function() {
 
 
         const demos = {
-            timeline: [taskComplete, meanOfEff, gender, age, ethnicity, english, finalWord]
+            timeline: [taskComplete, gender, age, ethnicity, english, finalWord]
         };
 
         return demos;
