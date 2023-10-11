@@ -207,7 +207,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won 5 cents:</p></div>
-                            <img style="display: block; margin-left: auto; margin-right: auto" src="/img/coins.jpg">
+                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.jpg">
                             <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
                                 <p style="font-size: 35px">You reached the target score!</p>
                                 <span style="font-size: 75px; line-height:90px">+5</span>
@@ -417,7 +417,7 @@ const exp = (function() {
             stimulus: function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
-                                <img src="/img/coins.jpg">
+                                <img src="/mentalEffort_flanker/img/coins.jpg">
                                 <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+5</span></div>
                             </div>`
                 } else {
