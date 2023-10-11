@@ -116,7 +116,7 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
                     data.totalErrors = totalErrors;
-                    data.attnChkFails += totalErrors;
+                    data.attnChkFails = data.attnChkFails + totalErrors;
                     console.log(data.attnChkFails);
                 },
             };
