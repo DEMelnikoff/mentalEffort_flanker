@@ -585,7 +585,7 @@ const exp = (function() {
             pages: [`<div class='parent' style='color: rgb(109, 112, 114)'>
                     <p>Both version of Left or Right are now complete!</p>
                     <p>To finish this study, please continue to answer a few final questions.</p>
-                    </div>`];  
+                    </div>`],
             show_clickable_nav: true,
             post_trial_gap: 500,
             allow_keys: false,
