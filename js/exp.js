@@ -20,8 +20,6 @@ const exp = (function() {
         settings.effort = ['hard', 'easy'];
     };
 
-    console.log(settings.hitRates)
-
     const getArrays = function(settings, round) {
         let nWins = settings.hitRates[round] * settings.nTrials;
         let nLoss = settings.nTrials - nWins;
@@ -61,7 +59,6 @@ const exp = (function() {
         hitRate_2: settings.hitRates[1],
         effort_1: settings.effort[0],
         effort_2: settings.effort[1],
-        attnChkFails: 0,
     });
 
    /*
@@ -116,8 +113,6 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
                     data.totalErrors = totalErrors;
-                    data.attnChkFails = data.attnChkFails + totalErrors;
-                    console.log(data.attnChkFails);
                 },
             };
         } else if (round == 2) {
@@ -142,7 +137,6 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_2);
                     data.totalErrors = totalErrors;
-                    data.attnChkFails += totalErrors;
                 },
             };
         }
@@ -402,7 +396,6 @@ const exp = (function() {
                 multiplier == 1 ? win = false : win = true;
                 let delta = Math.floor(Math.random() * 4 + 1) * multiplier;
                 target_score = Math.max(0, score_feedback + delta);
-                console.log(outcomeArray, trial, multiplier);
                 let html = `<div class="flanker-container"><div class="feedback-text"><p>Your Score: <strong>${score_feedback}</strong></p><p>Target Score: <strong>${target_score}</strong></p></div></div>`;
                 return html;
             },
