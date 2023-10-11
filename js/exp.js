@@ -8,6 +8,7 @@ const exp = (function() {
     let settings = {
         hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
         adjustment: [0, .4][Math.floor(Math.random() * 2)],
+        nTrials: 10,
     };
 
     settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
@@ -19,16 +20,40 @@ const exp = (function() {
         settings.effort = ['hard', 'easy'];
     };
 
+    console.log(settings.hitRates)
+
+    const getArrays = function(settings, round) {
+        let nWins = settings.hitRates[round] * settings.nTrials;
+        let nLoss = settings.nTrials - nWins;
+        let winArray = Array(nWins).fill(-1);
+        let lossArray = Array(nLoss - 1).fill(1);
+        let outcomeArray = winArray.concat(lossArray);
+        outcomeArray = jsPsych.randomization.repeat(outcomeArray, 1);
+        outcomeArray.push(1);
+        return outcomeArray;
+    };
+
+    const outcomeArray_1 = getArrays(settings, 0);
+    const outcomeArray_2 = getArrays(settings, 1);
+    const outcomeArray = outcomeArray_1.concat(outcomeArray_2);
+
     let text = {};
 
     if (settings.effort[0] == 'hard') {
         text.example_1 = ">><>>";
-        text.stimInst_1 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction";
-        text.stimInst_2 = "the middle arrow will always point in the same direction as the other four arrows";
+        text.arrowOrArrows = 'middle arrow';
+        text.pointOrPoints = 'points';
+        text.exception1 = `<p>For each cue, the middle arrow will always point in the same direction as the other four arrows (e.g., <<<<<).</p>
+        <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all five arrows are pointing.</p>`;
+        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>higher</b> than they were in the first version. Therefore, higher scores will be required to earn bonus money.</p>`;
+
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = "<<<<<";
-        text.stimInst_1 = "the middle arrow will always point in the same direction as the other four arrows";
-        text.stimInst_2 = "the middle arrow will sometimes point in the same direction as the other four arrows, and sometimes it will point in the opposite direction";
+        text.arrowOrArrows = 'arrows';
+        text.pointOrPoints = 'point';
+        text.exception1 = `<p>For each cue, you must indicate the direction of the <b>middle arrow only</b>.</p>
+        <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <<<<<), and other times it will point in the opposite direction (e.g., <<><<). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
+        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>lower</b> than they were in the first version. Therefore, lower scores will be required to earn bonus money.</p>`;
     };
 
     jsPsych.data.addProperties({
@@ -47,44 +72,77 @@ const exp = (function() {
 
     function MakeAttnChk(settings, round) {
 
-        let correctAnswers = [`Earn as many points as possible.`, `5`];
+        let firstOrSecond;
+        (round == 1) ? firstOrSecond = 'first' : firstOrSecond = 'second';
 
-        if (settings.effortOrder == 'highEffort_first' && round == 1 || settings.effortOrder == 'highEffort_second' && round == 2) {
-            correctAnswers.push(`In Round ${round}, I must tap my right arrow as fast as possible to build momentum.`);
-        } else if (settings.effortOrder == 'highEffort_first' && round == 2 || settings.effortOrder == 'highEffort_second' && round == 1) {
-            correctAnswers.push(`In Round ${round}, I must tap my right arrow at a moderate pace to build momentum.`);
+        let correctAnswers_1 = [`A score equal to or greater than the target score (which is not revealed until the end of the round)`, `5 cents`];
+        let correctAnswers_2;
+
+        if (settings.effort[0] == 'easy' && round == 1 || settings.effort[1] == 'easy' && round == 2) {
+            correctAnswers_1.push(`For each cue, I must indicate the direction of the arrows.`);
+            correctAnswers_2 = [`In the second version of Left or Right, all arrows will point in the same direction.`, `In the second version of Left or Right, the target scores will be higher.`];
+        } else if (settings.effort[0] == 'hard' && round == 1 || settings.effort[1] == 'hard' && round == 2) {
+            correctAnswers_1.push(`For each cue, I must indicate the direction of the middle arrow only.`);
+            correctAnswers_2 = [`In the second version of Left or Right, I must indicate the direction of the middle arrow only.`, `In the second version of Left or Right, the target scores will be lower.`];
         };
 
-        const attnChk = {
-           type: jsPsychSurveyMultiChoice,
-            preamble: `<div class='parent' style='text-align: left; color: rgb(109, 112, 114)'>
-                <p><strong>Please answer the following questions.</strong></p>
-                </div>`,
-            questions: [
-                {
-                    prompt: "<div style='color: rgb(109, 112, 114)'>What is the goal of Spin the Wheel?</div>", 
-                    name: `attnChk1`, 
-                    options: [`Earn as many points as possible.`, `Spin the wheel as fast as possible.`],
+        let attnChk;
+
+        if (round == 1) {
+            attnChk = {
+                type: jsPsychSurveyMultiChoice,
+                preamble: `<div class='parent' style='text-align: left; color: rgb(109, 112, 114)'>
+                    <p><strong>Please answer the following questions.</strong></p>
+                    </div>`,
+                questions: [
+                    {
+                        prompt: "<div style='color: rgb(109, 112, 114)'>What score is required to complete a round?</div>", 
+                        name: `attnChk1`, 
+                        options: [`A score of 10`, `A score of 30`, `A score equal to or greater than the target score (which is not revealed until the end of the round)`, `A score exactly equal to the target score (which is not revealed until the end of the round)`],
+                    },
+                    {
+                        prompt: "<div style='color: rgb(109, 112, 114)'>How much bonus money is each completion worth?</div>", 
+                        name: `attnChk2`, 
+                        options: [`0 cents`, `2 cents`, `3 cents`, `5 cents`],
+                    },
+                    {
+                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${firstOrSecond} version of Left or Right?</div>`, 
+                        name: `attnChk3`, 
+                        options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
+                    },
+                ],
+                scale_width: 500,
+                on_finish: (data) => {
+                    const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
+                    data.totalErrors = totalErrors;
                 },
-                {
-                    prompt: "<div style='color: rgb(109, 112, 114)'>How many points is it worth when the wheel lands on a 5?</div>", 
-                    name: `attnChk2`, 
-                    options: [`0`, `5`, `10`],
+            };
+        } else if (round == 2) {
+            attnChk = {
+                type: jsPsychSurveyMultiChoice,
+                preamble: `<div class='parent' style='text-align: left; color: rgb(109, 112, 114)'>
+                    <p><strong>Please answer the following questions.</strong></p>
+                    </div>`,
+                questions: [
+                    {
+                        prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
+                        name: `attnChk4`, 
+                        options: [`In the second version of Left or Right, I must indicate the direction of the middle arrow only.`, `In the second version of Left or Right, all arrows will point in the same direction.`],
+                    },
+                    {
+                        prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
+                        name: `attnChk2`, 
+                        options: [`In the second version of Left or Right, the target scores will be lower.`, `In the second version of Left or Right, the target scores will be higher.`],
+                    },
+                ],
+                scale_width: 500,
+                on_finish: (data) => {
+                    const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_2);
+                    data.totalErrors = totalErrors;
                 },
-                {
-                    prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
-                    name: `attnChk3`, 
-                    options: [`In Round ${round}, I must tap my right arrow as fast as possible to build momentum.`, `In Round ${round}, I must tap my right arrow at a moderate pace to build momentum.`],
-                },
-            ],
-            scale_width: 500,
-            on_finish: (data) => {
-                console.log(data)
-                const totalErrors = dmPsych.getTotalErrors(data, correctAnswers);
-                console.log(totalErrors)
-                data.totalErrors = totalErrors;
-            },
-        };
+            };
+        }
+
 
         const errorMessage = {
             type: jsPsychSurvey,
@@ -115,18 +173,81 @@ const exp = (function() {
           },
         };
 
-        const practiceComplete = {
+        const practiceComplete_1 = {
             type: jsPsychSurvey,
             pages: [
                 [
                     {
                         type: 'html',
-                        prompt: `<p><strong>Practice is now complete!</strong></p>
-                        <p>Remember: your goal is to earn as many points as possible across the two rounds of Left or Right.<br>
-                        You'll find out how many points you earned after both rounds are complete.</p>`
+                        prompt: `<p>Practice is now complete. Soon, you'll complete the first version of Left or Right.</p>
+                        <p><b>During the first version of Left or Right, you'll be able to earn bonus money!</b></p>
+                        <p>To learn how to earn bonus money, continue to the next screen.</p>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<p>During the first version of Left or Right, each round will have a different <b>target score</b>. 
+                        If you reach the target score before time runs out, the round will be marked as "complete."</p>
+                        <p>For example, if the target score is 20, you need a score of 20 or more to complete the round.</p>
+                        <p>The target score is not revealed until the end of each round.</p>
+                        <p>Bonus money is awarded for each completion: <b>For each round you complete, you'll earn a 5 cent bonus</b>.</p>
+                        <p>For an illustration of the first version of Left or Right, continue to the next screen.</p>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<p>If you score <b>22</b> and the target score is <b>20</b>, you'll see:</p>
+                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>22</b></p>
+                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won 5 cents:</p></div>
+                            <img style="display: block; margin-left: auto; margin-right: auto" src="/img/coins.jpg">
+                            <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
+                                <p style="font-size: 35px">You reached the target score!</p>
+                                <span style="font-size: 75px; line-height:90px">+5</span>
+                            </div>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<p>If you score <b>18</b> and the target score is <b>20</b>, you'll see:</p>
+                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>18</b></p>
+                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you failed to win a bonus:</p></div>
+                            <div style="height:200px"></div>
+                            <div class="outcome-text" style="text-align: center; color: black; font-weight: bold">
+                                <p style="font-size: 35px">You missed the target score.</p>
+                                <span style="font-size: 75px; line-height:90px">+0</span>
+                            </div>`
                     },
                 ],
 
+            ],
+            button_label_finish: 'Next',
+        };
+
+        const practiceComplete_2 = {
+            type: jsPsychSurvey,
+            pages: [
+                [
+                    {
+                        type: 'html',
+                        prompt: `<p>Practice is now complete. Soon, you'll complete the second version of the Left or Right.</p>
+                        ${text.exception2}`
+                    },
+                ],
             ],
             button_label_finish: 'Next',
         };
@@ -137,7 +258,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>You're now ready to play Round ${round} of Spin the Wheel.</p>
+                        prompt: `<p>You're now ready to play the ${firstOrSecond} version of Left or Right.</p>
                         <p>To begin, continue to the next screen.</p>`
                     },
                 ],
@@ -146,7 +267,11 @@ const exp = (function() {
             button_label_finish: 'Next',
         };
 
-        this.timeline = [practiceComplete, instLoop, readyToPlay];
+        if (round == 1) {
+            this.timeline = [practiceComplete_1, instLoop, readyToPlay];
+        } else if (round == 2) {
+            this.timeline = [practiceComplete_2, instLoop, readyToPlay];
+        }
     }
 
 
@@ -165,7 +290,7 @@ const exp = (function() {
                     type: 'html',
                     prompt: `<p><strong>What makes some activities more immersive and engaging than others?</strong></p>
                     <p>We're interested in why people feel effortlessly engaged in some activities (such as engrossing video games), but struggle to focus on other activities (like tedious chores).</p>
-                    <p>To help us, you'll complete two different versions of a simple game called <strong>Left or Right</strong>. After each version, you'll report how immersed and engaged you felt.</p>
+                    <p>To help us, you'll complete two different versions of a game called <strong>Left or Right</strong>. After each version, you'll report how immersed and engaged you felt.</p>
                     <p>When you're ready to learn about the first version of Left or Right, continue to the next page.</p>`
                 },
 
@@ -174,26 +299,23 @@ const exp = (function() {
                 {
                     type: 'html',
                     prompt: `<p>The first version of Left or Right takes place over multiple rounds.</p>
-                    <p>In each round, you'll see a series of cues composed of five arrows (like this: ${text.example_1}).</p>
-                    <p>For each cue, you must indicate the direction of the <strong>middle arrow</strong>:<br>
-                    If the middle arrow points left, you must press Q on your keyboard.<br>
-                    If the middle arrow points right, you must press P on your keyboard.</p>
-                    <p>For each correct response you make, your score will increase by one. For instance, if you see ${text.example_1} and press Q, your score will increase by 1.</p>
-                    <p>However, for every error you make, your score will decrease by one. For instance, if you see ${text.example_1} and press P, your score will decrease by 1.</p>`
+                    <p>In each round, you'll see a series of cues composed of five arrows (e.g., ${text.example_1}).</p>
+                    For each cue, you must indicate the <b>direction of the ${text.arrowOrArrows}</b>:
+                    <ul>
+                        <li>If the ${text.arrowOrArrows} ${text.pointOrPoints} left, you must press Q on your keyboard.</li>
+                        <li>If the ${text.arrowOrArrows} ${text.pointOrPoints} right, you must press P on your keyboard.</li>
+                    </ul>
+                    <p>For each correct response you make, your score will increase by one.<br>
+                    For instance, if you see ${text.example_1} and press Q, your score will increase by 1.</p>
+                    <p>For every error you make, your score will decrease by one.<br>
+                    For instance, if you see ${text.example_1} and press P, your score will decrease by 1.</p>`
                 },
 
             ],
             [
                 {
                     type: 'html',
-                    prompt: `<p>In the first version of Left or Right, ${text.stimInst_1}.</p>`
-                },
-
-            ],
-            [
-                {
-                    type: 'html',
-                    prompt: `<p>To get a feel for the first version of the typing task, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
+                    prompt: `<p>To get a feel for the first version of Left or Right, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
                     <p>Continue to start practing.</p>`,
                 }
             ],
@@ -208,18 +330,18 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p>Round 1 of Spin the Wheel is now complete!</p>
-                    <p>Continue to learn about and play Round 2.</p>`
+                    prompt: `<p>The first version of Left or Right is now complete!</p>
+                    <p>Continue to learn about the second version.</p>`
                 },
             ],
             [
                 {
                     type: 'html',
-                    prompt: `<p>In Round 2 of Spin the Wheel, you'll need to tap your right arrow ${text.speed1_r2}.<br>${text.speed2_r2}</p>
-                    Once you build enough momentum, you must press your spacebar to spin the wheel.</p>
-                    <p>To practice Round 2, continue to the next page.</p>`,
+                    prompt: `<p>The second version of Left or Right is identical to the first version with one exception.</p>
+                    ${text.exception1}
+                    <p>To practice the second version of Left or Right, continue to the next page.</p>`,
                 }
-            ]
+            ],
         ],
         button_label_finish: 'Next'    
     };
@@ -241,13 +363,14 @@ const exp = (function() {
     let score_feedback;
     let target_score;
     let win;
+    let trial = 0;
 
     const MakeTimeline = function(round, isPractice) {
 
 
         const fixation = {
             type:jsPsychHtmlKeyboardResponse,
-            stimulus: `<div class="outcome-container-lose"><div class="outcome-text"><p>+</p></div></div>`,
+            stimulus: `<div class="outcome-container-lose"><div class="outcome-text" style="font-size:75px; font-weight: normal"><p>+</p></div></div>`,
             choices: "NO_KEYS",
             trial_duration: 500,
         };
@@ -266,16 +389,11 @@ const exp = (function() {
         const feedback = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
-                win = Math.random() < settings.hitRates[round];
-                if (score_feedback < 6) {
-                    win = false;
-                };
-                let delta = Math.floor(Math.random() * 5 + 1);
-                if (win) {
-                    target_score = Math.max(0, score_feedback - delta);
-                } else {
-                    target_score = score_feedback + delta;
-                };
+                let multiplier = outcomeArray[trial];
+                multiplier == 1 ? win = false : win = true;
+                let delta = Math.floor(Math.random() * 5 + 1) * multiplier;
+                target_score = Math.max(0, score_feedback + delta);
+                console.log(outcomeArray, trial, multiplier);
                 let html = `<div class="flanker-container"><div class="feedback-text"><p>Your Score: <strong>${score_feedback}</strong></p><p>Target Score: <strong>${target_score}</strong></p></div></div>`;
                 return html;
             },
@@ -285,6 +403,7 @@ const exp = (function() {
                 data.score = score_feedback;
                 data.target_score = target_score;
                 data.outcome = win;
+                trial++;
             },
         };
 
@@ -294,7 +413,7 @@ const exp = (function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
                                 <img src="/img/coins.jpg">
-                                <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+10</span></div>
+                                <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+5</span></div>
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
@@ -309,17 +428,19 @@ const exp = (function() {
 
         if (!isPractice) {
             this.timeline = [fixation, flanker, feedback, outcome];
-            this.repetitions = 10;
+            this.repetitions = settings.nTrials;
         } else {
             this.timeline = [fixation, flanker];
-            this.repetitions = 10;            
+            this.repetitions = 4;            
         }
 
 
     };
 
-    const flanker_timeline_1 = new MakeTimeline(0, true);
-    const flanker_timeline_2 = new MakeTimeline(1, true);
+    const flanker_timeline_p1 = new MakeTimeline(0, true);
+    const flanker_timeline_p2 = new MakeTimeline(1, true);
+    const flanker_timeline_1 = new MakeTimeline(0, false);
+    const flanker_timeline_2 = new MakeTimeline(1, false);
 
 
    /*
@@ -329,144 +450,125 @@ const exp = (function() {
     */
 
     // scales
-    var zeroToExtremely = ['0<br>A little', '1', '2', '3', '4', '5', '6', '7', '8<br>Extremely'];
-    var zeroToALot = ['0<br>A little', '1', '2', '3', '4', '5', '6', '7', '8<br>A lot'];
+    const zeroToExtremely = ["0<br>A little", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>Extremely"];
+    const zeroToALot = ['0<br>A little', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10<br>A lot'];
 
     // constructor functions
-    function MakeFlowQs(round) {
+    function MakeFlowQs(round, firstOrSecond) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
-
-        <p>Thank you for completing Round ${round} of Spin the Wheel!</p>
-
-        <p>During Round ${round}, to what extent did you feel immersed and engaged in what you were doing?<br>
-        Report the degree to which you felt immersed and engaged by answering the following questions.</p></div>`;
+        <p>Thank you for completing the ${firstOrSecond} version of Left or Right!</p>
+        <p>During the ${firstOrSecond} version of Left or Right, to what extent did you feel<br><b>immersed</b> and <b>engaged</b> in what you were doing?</p>
+        <p>Report the degree to which you felt immersed and engaged by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During Round ${round}, to what extent did you feel <strong>absorbed</strong> in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>absorbed</strong> did you feel in what you were doing?</div>`,
                 name: `absorbed`,
-                labels: zeroToExtremely,
+                labels: ["0<br>Not very absorbed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More absorbed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During Round ${round}, to what extent did you feel <strong>immersed</strong> in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>immersed</strong> did you feel in what you were doing?</div>`,
                 name: `immersed`,
-                labels: zeroToExtremely,
+                labels: ["0<br>Not very immersed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More immersed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During Round ${round}, to what extent did you feel <strong>engaged</strong> in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>engaged</strong> did you feel in what you were doing?</div>`,
                 name: `engaged`,
-                labels: zeroToExtremely,
+                labels: ["0<br>Not very engaged", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engaged than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During Round ${round}, to what extent did you feel <strong>engrossed</strong> in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>engrossed</strong> did you feel in what you were doing?</div>`,
                 name: `engrossed`,
-                labels: zeroToExtremely,
+                labels: ["0<br>Not very engrossed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engrossed than I've ever felt"],
                 required: true,
             },
         ];
         this.randomize_question_order = false;
-        this.scale_width = 500;
-        this.data = {round: round , mi: jsPsych.timelineVariable('mi'), targetPressTime: jsPsych.timelineVariable('targetPressTime'), sectors: jsPsych.timelineVariable('sectors'), ev: jsPsych.timelineVariable('ev'), sd: jsPsych.timelineVariable('sd')};
+        this.scale_width = 700;
+        this.data = {round: round};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEnjoyQs(round) {
+    function MakeEnjoyQs(round, firstOrSecond) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
 
-        <p>Below are a few more questions about Round ${round} of Spin the Wheel.</p>
+        <p>Below are a few more questions about the ${firstOrSecond} version of Left or Right.</p>
 
         <p>Instead of asking about immersion and engagement, these questions ask about <strong>enjoyment</strong>.<br>
-        Report how much you <strong>enjoyed</strong> Round ${round} by answering the following questions.</p></div>`;
+        Report how much you <strong>enjoyed</strong> the ${firstOrSecond} version of Left or Right by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing Round ${round}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `enjoyable`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing Round ${round}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `like`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing Round ${round}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `dislike`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing Round ${round}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `fun`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was Round ${round}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `entertaining`,
                 labels: zeroToExtremely,
                 required: true,
             },
         ];
         this.randomize_question_order = false;
-        this.scale_width = 500;
-        this.data = {round: round, mi: jsPsych.timelineVariable('mi'), targetPressTime: jsPsych.timelineVariable('targetPressTime'), sectors: jsPsych.timelineVariable('sectors'), ev: jsPsych.timelineVariable('ev'), sd: jsPsych.timelineVariable('sd')};
+        this.scale_width = 700;
+        this.data = {round: round};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEffortQs(round) {
+    function MakeEffortQs(round, firstOrSecond) {
         this.type = jsPsychSurveyLikert;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>While playing Round ${round} of Spin the Wheel,<br>how much effort did it feel like you were exerting?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>While playing the ${firstOrSecond} version of Left or Right,<br>how much <b>effort</b> did it feel like you were exerting?</div>`,
                 name: `effort`,
                 labels: zeroToALot,
                 required: true,
             },
         ];
         this.randomize_question_order = false;
-        this.scale_width = 500;
-        this.data = {round: round, mi: jsPsych.timelineVariable('mi'), targetPressTime: jsPsych.timelineVariable('targetPressTime'), sectors: jsPsych.timelineVariable('sectors'), ev: jsPsych.timelineVariable('ev'), sd: jsPsych.timelineVariable('sd')};
+        this.scale_width = 700;
+        this.data = {round: round};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);      
         };
     };
 
-    function MakeMeaningQs(round) {
-        this.type = jsPsychSurveyLikert;
-        this.questions = [
-            {
-                prompt: `<div style='color:rgb(109, 112, 114)'>While playing Round ${round} of Spin the Wheel,<br>to what extent did you feel like you were doing something meaningful?</div>`,
-                name: `meaning`,
-                labels: zeroToALot,
-                required: true,
-            },
-        ];
-        this.randomize_question_order = false;
-        this.scale_width = 500;
-        this.data = {round: round, mi: jsPsych.timelineVariable('mi'), targetPressTime: jsPsych.timelineVariable('targetPressTime'), sectors: jsPsych.timelineVariable('sectors'), ev: jsPsych.timelineVariable('ev'), sd: jsPsych.timelineVariable('sd')};
-        this.on_finish = (data) => {
-            dmPsych.saveSurveyData(data);      
-        };
-    };
 
     // timeline: first wheel
     p.wheel_1 = {
-        timeline: [flanker_timeline_1, attnChk1, new MakeFlowQs(1), new MakeEnjoyQs(1), new MakeEffortQs(1), new MakeMeaningQs(1)],
+        timeline: [flanker_timeline_p1, attnChk1, flanker_timeline_1, new MakeFlowQs(1, 'first'), new MakeEnjoyQs(1, 'first'), new MakeEffortQs(1, 'first')],
     };
 
     // timeline: second wheel
     p.wheel_2 = {
-        timeline: [flanker_timeline_2, attnChk2, new MakeFlowQs(2), new MakeEnjoyQs(2), new MakeEffortQs(2), new MakeMeaningQs(2)],
+        timeline: [flanker_timeline_p2, attnChk2, flanker_timeline_2, new MakeFlowQs(2, 'second'), new MakeEnjoyQs(2, 'second'), new MakeEffortQs(2, 'second')],
     };
 
    /*
@@ -480,14 +582,10 @@ const exp = (function() {
 
         const taskComplete = {
             type: jsPsychInstructions,
-            pages: function () { 
-                let scoreArray = jsPsych.data.get().select('score').values;
-                let totalScore = scoreArray[scoreArray.length - 1] + scoreArray[scoreArray.length - 4];
-                return [`<div class='parent' style='color: rgb(109, 112, 114)'>
-                    <p>Spin the Wheel is now complete! You won a total of <strong>${totalScore}</strong> points!</p>
+            pages: [`<div class='parent' style='color: rgb(109, 112, 114)'>
+                    <p>Both version of Left or Right are now complete!</p>
                     <p>To finish this study, please continue to answer a few final questions.</p>
-                    </div>`];
-            },  
+                    </div>`];  
             show_clickable_nav: true,
             post_trial_gap: 500,
             allow_keys: false,
@@ -649,7 +747,7 @@ const exp = (function() {
     p.save_data = {
         type: jsPsychPipe,
         action: "save",
-        experiment_id: "WEVmBcml7Z0g",
+        experiment_id: "lEWIqPCNEg4q",
         filename: dmPsych.filename,
         data_string: ()=>jsPsych.data.get().csv()
     };

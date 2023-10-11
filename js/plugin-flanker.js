@@ -115,7 +115,6 @@ var jsPsychFlanker = (function (jspsych) {
                   score: score,
                   errors: errors,
               };
-              console.log("end")
               // clear the display
               display_element.innerHTML = "";
               // move on to the next trial
@@ -123,13 +122,14 @@ var jsPsychFlanker = (function (jspsych) {
           };
           // function to handle responses by the subject
           var after_response = (info) => {
-              console.log(info.key, trial.choices[target_idx], target_idx, trial.choices)
               if (info.key == trial.choices[target_idx]) {
                 score++;
               } else {
-                score--;
+                if (score > 0) { 
+                  score--
+                };
                 errors++;
-              }
+              };
               stim = createFlanker(trial.stimulus);
               new_html = `<div class="flanker-container"><div class="score">Your Score:<br><br><b>${score}</b></div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
               display_element.innerHTML = new_html;
