@@ -379,7 +379,7 @@ const exp = (function() {
             type: jsPsychFlanker,
             stimulus: settings.effort[round],
             response_ends_trial: false,
-            trial_duration: 10000,
+            trial_duration: 5000,
             choices: ['q', 'p'],
             on_finish: function(data) {
                 score_feedback = data.score;
