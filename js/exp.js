@@ -8,7 +8,7 @@ const exp = (function() {
     let settings = {
         hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
         adjustment: [0, .4][Math.floor(Math.random() * 2)],
-        nTrials: 10,
+        nTrials: 20,
     };
 
     settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
