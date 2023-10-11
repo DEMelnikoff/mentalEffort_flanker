@@ -61,6 +61,7 @@ const exp = (function() {
         hitRate_2: settings.hitRates[1],
         effort_1: settings.effort[0],
         effort_2: settings.effort[1],
+        attnChkFails: 0,
     });
 
    /*
@@ -115,6 +116,7 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
                     data.totalErrors = totalErrors;
+                    data.attnChkFails += totalErrors;
                 },
             };
         } else if (round == 2) {
@@ -139,6 +141,7 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_2);
                     data.totalErrors = totalErrors;
+                    data.attnChkFails += totalErrors;
                 },
             };
         }
@@ -150,7 +153,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>You provided the wrong answer.<br>To make sure you understand the game, please continue to re-read the instructions.</p>`
+                        prompt: `<p>You provided the wrong answer.</p><p>Please continue to try again.</p>`
                     },
                 ],
             ],
