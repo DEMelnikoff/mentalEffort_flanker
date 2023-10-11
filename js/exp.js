@@ -117,6 +117,7 @@ const exp = (function() {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
                     data.totalErrors = totalErrors;
                     data.attnChkFails += totalErrors;
+                    console.log(data.attnChkFails);
                 },
             };
         } else if (round == 2) {
