@@ -197,11 +197,10 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won the round, as well as your total number of wins:</p></div>
+                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won the round.</p></div>
                             <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/trophy.png">
                             <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
                                 <p style="font-size: 35px">You won the round!</p>
-                                <span style="font-size: 75px; line-height:90px">Total Wins: 1</span>
                             </div>`
                     },
                 ],
@@ -321,7 +320,6 @@ const exp = (function() {
                 {
                     type: 'html',
                     prompt: `<p>The first version of Left or Right is now complete!</p>
-                    <p>In the second version of Left or Right, you'll continue to add to your total number of wins.</p>
                     <p>Continue to learn more about the second version.</p>`
                 },
             ],
@@ -355,7 +353,6 @@ const exp = (function() {
     let target_score;
     let win;
     let trial = 0;
-    let total_wins = 0;
 
     const MakeTimeline = function(round, isPractice) {
 
@@ -402,10 +399,6 @@ const exp = (function() {
                 data.target_score = target_score;
                 data.outcome = win;
                 trial++;
-                if (win) {
-                    console.log(total_wins);
-                    total_wins++;                    
-                };
                 data.round = round + 1;
                 data.practice = isPractice;
             },
@@ -417,7 +410,7 @@ const exp = (function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
                                 <img src="/mentalEffort_flanker/img/trophy.png">
-                                <div class="outcome-text"><p>You won the round!</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_wins}</span></div>
+                                <div class="outcome-text"><p>You won the round!</p></div>
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
