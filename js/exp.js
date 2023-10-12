@@ -306,7 +306,7 @@ const exp = (function() {
                 {
                     type: 'html',
                     prompt: `<p>To get a feel for the first version of Left or Right, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
-                    <p>Continue to start practing.</p>`,
+                    <p>Continue to start practicing.</p>`,
                 }
             ],
 
@@ -403,6 +403,7 @@ const exp = (function() {
                 data.outcome = win;
                 trial++;
                 if (win) {
+                    console.log(total_wins);
                     total_wins++;                    
                 };
                 data.round = round + 1;
