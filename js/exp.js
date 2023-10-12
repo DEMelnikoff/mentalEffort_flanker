@@ -554,7 +554,7 @@ const exp = (function() {
         this.type = jsPsychSurveyLikert;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>While playing the ${firstOrSecond} version of Left or Right,<br>how much <b>effort</b> did it feel like you were exerting?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <b>effortful</b> was the ${firstOrSecond} version of Left or Right?</div>`,
                 name: `effort`,
                 labels: zeroToALot,
                 required: true,
