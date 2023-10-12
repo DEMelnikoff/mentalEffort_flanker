@@ -8,7 +8,7 @@ const exp = (function() {
     let settings = {
         hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
         adjustment: [0, .4][Math.floor(Math.random() * 2)],
-        nTrials: 20,
+        nTrials: 30,
     };
 
     settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
@@ -234,7 +234,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>Practice is now complete. Soon, you'll complete the second version of the Left or Right.</p>
+                        prompt: `<p>Practice is now complete. Soon, you'll play the second version of the Left or Right.</p>
                         ${text.exception2}`
                     },
                 ],
@@ -321,7 +321,8 @@ const exp = (function() {
                 {
                     type: 'html',
                     prompt: `<p>The first version of Left or Right is now complete!</p>
-                    <p>Continue to learn about the second version.</p>`
+                    <p>In the second version of Left or Right, you'll continue to add to your total number of wins.</p>
+                    <p>Continue to learn more about the second version.</p>`
                 },
             ],
             [
