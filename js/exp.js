@@ -402,7 +402,9 @@ const exp = (function() {
                 data.target_score = target_score;
                 data.outcome = win;
                 trial++;
-                total_wins++;
+                if (win) {
+                    total_wins++;                    
+                };
                 data.round = round + 1;
                 data.practice = isPractice;
             },
