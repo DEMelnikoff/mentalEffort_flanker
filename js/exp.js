@@ -427,7 +427,7 @@ const exp = (function() {
             on_finish: function(data) {
                 data.round = round + 1;
                 data.practice = isPractice;
-            };
+            },
         };
 
         if (!isPractice) {
