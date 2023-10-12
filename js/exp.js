@@ -43,7 +43,7 @@ const exp = (function() {
         text.pointOrPoints = 'points';
         text.exception1 = `<p>For each cue, the middle arrow will always point in the same direction as the other four arrows (e.g., <<<<<).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all five arrows are pointing.</p>`;
-        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>higher</b> than they were in the first version. Therefore, higher scores will be required to earn bonus money.</p>`;
+        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>higher</b> than they were in the first version. Therefore, higher scores will be required win each round.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = "<<<<<";
@@ -51,7 +51,7 @@ const exp = (function() {
         text.pointOrPoints = 'point';
         text.exception1 = `<p>For each cue, you must indicate the direction of the <b>middle arrow only</b>.</p>
         <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <<<<<), and other times it will point in the opposite direction (e.g., <<><<). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
-        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>lower</b> than they were in the first version. Therefore, lower scores will be required to earn bonus money.</p>`;
+        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>lower</b> than they were in the first version. Therefore, lower scores will be required win each round.</p>`;
     };
 
     jsPsych.data.addProperties({
@@ -73,7 +73,7 @@ const exp = (function() {
         let firstOrSecond;
         (round == 1) ? firstOrSecond = 'first' : firstOrSecond = 'second';
 
-        let correctAnswers_1 = [`A score equal to or greater than the target score (which is not revealed until the end of the round)`, `5 cents`];
+        let correctAnswers_1 = [`A score equal to or greater than the target score (which is not revealed until the end of the round)`];
         let correctAnswers_2;
 
         if (settings.effort[0] == 'easy' && round == 1 || settings.effort[1] == 'easy' && round == 2) {
@@ -94,18 +94,13 @@ const exp = (function() {
                     </div>`,
                 questions: [
                     {
-                        prompt: "<div style='color: rgb(109, 112, 114)'>What score is required to complete a round?</div>", 
+                        prompt: "<div style='color: rgb(109, 112, 114)'>What score is required to win a round?</div>", 
                         name: `attnChk1`, 
                         options: [`A score of 10`, `A score of 30`, `A score equal to or greater than the target score (which is not revealed until the end of the round)`, `A score exactly equal to the target score (which is not revealed until the end of the round)`],
                     },
                     {
-                        prompt: "<div style='color: rgb(109, 112, 114)'>How much bonus money is each completion worth?</div>", 
-                        name: `attnChk2`, 
-                        options: [`0 cents`, `2 cents`, `3 cents`, `5 cents`],
-                    },
-                    {
                         prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${firstOrSecond} version of Left or Right?</div>`, 
-                        name: `attnChk3`, 
+                        name: `attnChk2`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
                 ],
@@ -140,7 +135,6 @@ const exp = (function() {
                 },
             };
         }
-
 
         const errorMessage = {
             type: jsPsychSurvey,
@@ -178,18 +172,17 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p>Practice is now complete. Soon, you'll complete the first version of Left or Right.</p>
-                        <p><b>During the first version of Left or Right, you'll be able to earn bonus money!</b></p>
-                        <p>To learn how to earn bonus money, continue to the next screen.</p>`
+                        <p><b>During the first version of Left or Right, your goal is to win as many rounds as possible.</b></p>
+                        <p>To learn how to win rounds, continue to the next screen.</p>`
                     },
                 ],
                 [
                     {
                         type: 'html',
                         prompt: `<p>During the first version of Left or Right, each round will have a different <b>target score</b>. 
-                        If you reach the target score before time runs out, the round will be marked as "complete."</p>
-                        <p>For example, if the target score is 20, you need a score of 20 or more to complete the round.</p>
+                        If you reach the target score before time runs out, you will win the round.</p>
+                        <p>For example, if the target score is 20, you need a score of 20 or more to win the round.</p>
                         <p>The target score is not revealed until the end of each round.</p>
-                        <p>Bonus money is awarded for each completion: <b>For each round you complete, you'll earn a 5 cent bonus</b>.</p>
                         <p>For an illustration of the first version of Left or Right, continue to the next screen.</p>`
                     },
                 ],
@@ -204,11 +197,11 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won 5 cents:</p></div>
+                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won the round, as well as your total number of wins:</p></div>
                             <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.jpg">
                             <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
-                                <p style="font-size: 35px">You reached the target score!</p>
-                                <span style="font-size: 75px; line-height:90px">+5</span>
+                                <p style="font-size: 35px">You won the round!</p>
+                                <span style="font-size: 75px; line-height:90px">Total Wins: 1</span>
                             </div>`
                     },
                 ],
@@ -223,11 +216,10 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you failed to win a bonus:</p></div>
+                        prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you lost the round:</p></div>
                             <div style="height:200px"></div>
                             <div class="outcome-text" style="text-align: center; color: black; font-weight: bold">
-                                <p style="font-size: 35px">You missed the target score.</p>
-                                <span style="font-size: 75px; line-height:90px">+0</span>
+                                <p style="font-size: 35px">You lost the round.</p>
                             </div>`
                     },
                 ],
@@ -362,6 +354,7 @@ const exp = (function() {
     let target_score;
     let win;
     let trial = 0;
+    let total_wins = 0;
 
     const MakeTimeline = function(round, isPractice) {
 
@@ -406,6 +399,7 @@ const exp = (function() {
                 data.target_score = target_score;
                 data.outcome = win;
                 trial++;
+                total_wins++;
             },
         };
 
@@ -415,11 +409,11 @@ const exp = (function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
                                 <img src="/mentalEffort_flanker/img/coins.jpg">
-                                <div class="outcome-text"><p>You reached the target score!</p><span style="font-size: 75px; line-height:90px">+5</span></div>
+                                <div class="outcome-text"><p>You won the round!</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_score}</span></div>
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
-                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">+0</span></div>
+                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_score}/span></div>
                             </div>`
                 };
                 return html;
