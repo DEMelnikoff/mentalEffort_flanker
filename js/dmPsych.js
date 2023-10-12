@@ -19,7 +19,6 @@ const dmPsych = (function() {
       if(!boot) {
         document.body.innerHTML = 
         `<div align='center' style="margin: 10%; color: rgb(109, 112, 114);">
-            <p>You won a total of $${totalBonus.toFixed(2)}!</p>
             <p><b>To receive payment, please wait while we redirect you to Prolific.</b></p>
         </div>`;
         setTimeout(() => { location.href = `https://app.prolific.co/submissions/complete?cc=${completionCode}` }, 4000);
