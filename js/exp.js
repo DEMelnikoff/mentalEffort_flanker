@@ -374,6 +374,8 @@ const exp = (function() {
             choices: ['q', 'p'],
             on_finish: function(data) {
                 score_feedback = data.score;
+                data.round = round + 1;
+                data.practice = isPractice;
             },
         };
 
@@ -400,6 +402,8 @@ const exp = (function() {
                 data.outcome = win;
                 trial++;
                 total_wins++;
+                data.round = round + 1;
+                data.practice = isPractice;
             },
         };
 
@@ -420,6 +424,10 @@ const exp = (function() {
             },
             choices: "NO_KEYS",
             trial_duration: 2500,
+            on_finish: function(data) {
+                data.round = round + 1;
+                data.practice = isPractice;
+            };
         };
 
         if (!isPractice) {
@@ -743,7 +751,7 @@ const exp = (function() {
     p.save_data = {
         type: jsPsychPipe,
         action: "save",
-        experiment_id: "lEWIqPCNEg4q",
+        experiment_id: "Xq8IX6g6glYU",
         filename: dmPsych.filename,
         data_string: ()=>jsPsych.data.get().csv()
     };
