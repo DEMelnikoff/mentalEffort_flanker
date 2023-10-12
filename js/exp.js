@@ -198,7 +198,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<div style="width:800px; text-align:center"><p>Then you'll see that you won the round, as well as your total number of wins:</p></div>
-                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.jpg">
+                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/trophy.jpg">
                             <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
                                 <p style="font-size: 35px">You won the round!</p>
                                 <span style="font-size: 75px; line-height:90px">Total Wins: 1</span>
@@ -408,7 +408,7 @@ const exp = (function() {
             stimulus: function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
-                                <img src="/mentalEffort_flanker/img/coins.jpg">
+                                <img src="/mentalEffort_flanker/img/trophy.jpg">
                                 <div class="outcome-text"><p>You won the round!</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_score}</span></div>
                             </div>`
                 } else {
