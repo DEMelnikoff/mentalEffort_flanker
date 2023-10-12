@@ -413,11 +413,11 @@ const exp = (function() {
                 if (win) {
                     html = `<div class="outcome-container-win">
                                 <img src="/mentalEffort_flanker/img/trophy.png">
-                                <div class="outcome-text"><p>You won the round!</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_score}</span></div>
+                                <div class="outcome-text"><p>You won the round!</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_wins}</span></div>
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
-                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_score}/span></div>
+                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_wins}/span></div>
                             </div>`
                 };
                 return html;
