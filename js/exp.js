@@ -417,7 +417,7 @@ const exp = (function() {
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
-                                <div class="outcome-text"><p>You missed the target score</p><span style="font-size: 75px; line-height:90px">Total Wins: ${total_wins}/span></div>
+                                <div class="outcome-text"><p>You lost the round.</p></div>
                             </div>`
                 };
                 return html;
