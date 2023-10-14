@@ -144,17 +144,17 @@ const exp = (function() {
                     },
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>If you complete a round, what are your chances of receiving a 5-cent bonus?</div>", 
-                        name: `attnChk1`, 
+                        name: `attnChk2`, 
                         options: [`25%`, `50%`, `75%`, `100%`],
                     },
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>If you fail to complete a round, what are your chances of receiving a 5-cent bonus?</div>", 
-                        name: `attnChk1`, 
+                        name: `attnChk3`, 
                         options: [`25%`, `50%`, `75%`, `100%`],
                     },
                     {
                         prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${firstOrSecond} version of Left or Right?</div>`, 
-                        name: `attnChk2`, 
+                        name: `attnChk4`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
                 ],
