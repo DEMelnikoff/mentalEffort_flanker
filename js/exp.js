@@ -484,7 +484,7 @@ const exp = (function() {
                 return html;
             },
             choices: "NO_KEYS",
-            trial_duration: 2500,
+            trial_duration: 2000,
             on_finish: function(data) {
                 data.score = score_feedback;
                 data.target_score = target_score;
@@ -516,7 +516,7 @@ const exp = (function() {
                 return html;
             },
             choices: "NO_KEYS",
-            trial_duration: 2500,
+            trial_duration: 2000,
             on_finish: function(data) {
                 data.round = round + 1;
                 data.practice = isPractice;
