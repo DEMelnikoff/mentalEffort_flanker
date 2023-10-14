@@ -20,8 +20,6 @@ const exp = (function() {
         settings.effort = ['hard', 'easy'];
     };
 
-    console.log(settings.hitRates[0]);
-
     const getArrays = function(settings, round) {
 
         // shuffle function
