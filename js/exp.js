@@ -680,7 +680,7 @@ const exp = (function() {
         const taskComplete = {
             type: jsPsychInstructions,
             pages: [`<div class='parent' style='color: rgb(109, 112, 114)'>
-                    <p>Both version of Left or Right are now complete!</p>
+                    <p>Both versions of Left or Right are now complete!</p>
                     <p>To finish this study, please continue to answer a few final questions.</p>
                     </div>`],
             show_clickable_nav: true,
