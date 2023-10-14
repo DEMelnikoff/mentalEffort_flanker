@@ -151,7 +151,7 @@ const exp = (function() {
                         options: [`25%`, `50%`, `75%`, `100%`],
                     },
                     {
-                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${firstOrSecond} version of Left or Right?</div>`, 
+                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of Left or Right?</div>`, 
                         name: `attnChk4`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
@@ -223,15 +223,15 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>Practice is now complete. Soon, you'll complete the first version of Left or Right.</p>
-                        <p><b>During the first version of Left or Right, you'll be able to earn bonus money!</b></p>
+                        prompt: `<p>Practice is now complete. Soon, you'll complete Left or Right.</p>
+                        <p><b>During Left or Right, you'll be able to earn bonus money!</b></p>
                         <p>To learn how to win bonus money, continue to the next screen.</p>`
                     },
                 ],
                 [
                     {
                         type: 'html',
-                        prompt: `<p>During the first version of Left or Right, each round will have a different <b>target score</b>. 
+                        prompt: `<p>During Left or Right, each round will have a different <b>target score</b>. 
                         If you reach the target score before time runs out, that round will be marked as "complete."</p>
                         <p>For example, if the target score is 20, you need a score of 20 or more to complete the round.</p>
                         <p>The target score is not revealed until the end of each round.</p>
@@ -324,7 +324,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>You're now ready to play the ${firstOrSecond} version of Left or Right.</p>
+                        prompt: `<p>You're now ready to play Left or Right.</p>
                         <p>To begin, continue to the next screen.</p>`
                     },
                 ],
@@ -341,11 +341,29 @@ const exp = (function() {
     }
 
 
-
     p.consent = {
         type: jsPsychExternalHtml,
         url: "./html/consent.html",
         cont_btn: "advance",
+    };
+
+    p.intro_holeInOne = {
+        type: jsPsychSurvey,
+        pages: [
+            [
+                {
+                    type: 'html',
+                    prompt: `<p><strong>What makes some activities more immersive and engaging than others?</strong></p>
+                    <p>We're interested in why people feel effortlessly engaged in some activities (such as engrossing video games), but struggle to focus on other activities.</p>
+                    <p>To help us, you'll play two different games. After each game, you'll report how immersed and engaged you felt.</p>
+                    <p>The first game that you'll play is called Hole in One.</p>
+                    <p>To learn about and play Hole in One, continue to the next screen.</p></p>`
+                },
+
+            ],
+
+        ],
+        button_label_finish: 'Next'
     };
 
     p.intro_1 = {
@@ -354,17 +372,15 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p><strong>What makes some activities more immersive and engaging than others?</strong></p>
-                    <p>We're interested in why people feel effortlessly engaged in some activities (such as engrossing video games), but struggle to focus on other activities (like tedious chores).</p>
-                    <p>To help us, you'll complete two different versions of a game called <strong>Left or Right</strong>. After each version, you'll report how immersed and engaged you felt.</p>
-                    <p>When you're ready to learn about the first version of Left or Right, continue to the next page.</p>`
+                    prompt: `<p>Hole in One is now complete!</p>
+                    <p>Next, you'll play the second of two games. Specifically, you'll play a game called <b>Left or Right</b>.</p>
+                    <p>Continue to learn about Left or Right.</p>`
                 },
-
             ],
             [
                 {
                     type: 'html',
-                    prompt: `<p>The first version of Left or Right takes place over multiple rounds.</p>
+                    prompt: `<p>Left or Right takes place over multiple rounds.</p>
                     <p>In each round, you'll see a series of cues composed of five arrows (e.g., ${text.example_1}).</p>
                     For each cue, you must indicate the <b>direction of the ${text.arrowOrArrows}</b>:
                     <ul>
@@ -381,7 +397,7 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p>To get a feel for the first version of Left or Right, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
+                    prompt: `<p>To get a feel for Left or Right, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
                     <p>Continue to start practicing.</p>`,
                 }
             ],
@@ -412,6 +428,7 @@ const exp = (function() {
         button_label_finish: 'Next'    
     };
 
+
     const attnChk1 = new MakeAttnChk(settings, 1);
 
     const attnChk2 = new MakeAttnChk(settings, 2);
@@ -425,6 +442,7 @@ const exp = (function() {
 
 
     // temporary variables for flanker task
+
 
     let score_feedback;
     let target_score;
@@ -549,33 +567,33 @@ const exp = (function() {
     const zeroToALot = ['0<br>A little', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10<br>A lot'];
 
     // constructor functions
-    function MakeFlowQs(round, firstOrSecond) {
+    function MakeFlowQs(game) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
-        <p>Thank you for completing the ${firstOrSecond} version of Left or Right!</p>
-        <p>During the ${firstOrSecond} version of Left or Right, to what extent did you feel<br><b>immersed</b> and <b>engaged</b> in what you were doing?</p>
+        <p>Thank you for completing ${game}!</p>
+        <p>During ${game}, to what extent did you feel <b>immersed</b> and <b>engaged</b> in what you were doing?</p>
         <p>Report the degree to which you felt immersed and engaged by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>absorbed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>absorbed</strong> did you feel in what you were doing?</div>`,
                 name: `absorbed`,
                 labels: ["0<br>Not very absorbed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More absorbed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>immersed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>immersed</strong> did you feel in what you were doing?</div>`,
                 name: `immersed`,
                 labels: ["0<br>Not very immersed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More immersed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>engaged</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>engaged</strong> did you feel in what you were doing?</div>`,
                 name: `engaged`,
                 labels: ["0<br>Not very engaged", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engaged than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${firstOrSecond} version of Left or Right, how <strong>engrossed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>engrossed</strong> did you feel in what you were doing?</div>`,
                 name: `engrossed`,
                 labels: ["0<br>Not very engrossed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engrossed than I've ever felt"],
                 required: true,
@@ -583,47 +601,47 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {round: round};
+        this.data = {game: game};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEnjoyQs(round, firstOrSecond) {
+    function MakeEnjoyQs(game) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
 
-        <p>Below are a few more questions about the ${firstOrSecond} version of Left or Right.</p>
+        <p>Below are a few more questions about ${game}.</p>
 
         <p>Instead of asking about immersion and engagement, these questions ask about <strong>enjoyment</strong>.<br>
-        Report how much you <strong>enjoyed</strong> the ${firstOrSecond} version of Left or Right by answering the following questions.</p></div>`;
+        Report how much you <strong>enjoyed</strong> ${game} by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing ${game}?</div>`,
                 name: `enjoyable`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing ${game}?</div>`,
                 name: `like`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing ${game}?</div>`,
                 name: `dislike`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing ${game}?</div>`,
                 name: `fun`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was ${game}?</div>`,
                 name: `entertaining`,
                 labels: zeroToExtremely,
                 required: true,
@@ -631,17 +649,17 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {round: round};
+        this.data = {game: game};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEffortQs(round, firstOrSecond) {
+    function MakeEffortQs(game) {
         this.type = jsPsychSurveyLikert;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How <b>effortful</b> was the ${firstOrSecond} version of Left or Right?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <b>effortful</b> was ${game}?</div>`,
                 name: `effort`,
                 labels: zeroToALot,
                 required: true,
@@ -649,21 +667,44 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {round: round};
+        this.data = {game: game};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);      
         };
     };
 
 
+    const holeInOne = {
+        type: dmPsychHoleInOne,
+        stimulus: dmPsych.holeInOne.run,
+        total_shots: 20,  
+        canvas_size: [475, 900],
+        ball_color: 'white',
+        ball_size: 10,
+        ball_xPos: .13,
+        ball_yPos: .5,
+        wall_width: 75,
+        wall_color: '#797D7F',
+        wall_xPos: .9,
+        hole_size: 75,
+        friction: .02,
+        tension: .01,
+        prompt: `<div class='instructions'>
+
+        <p><strong>Hole in One</strong>. The goal of Hole in One is to shoot the ball through the hole.<br>
+        Follow the instructions in the game area, then play Hole in One. 
+        We'll let you know when time is up.</p></div>`,
+        data: {game: 'holeInOne'}
+    };
+
     // timeline: first wheel
-    p.wheel_1 = {
-        timeline: [flanker_timeline_p1, attnChk1, flanker_timeline_1, new MakeFlowQs(1, 'first'), new MakeEnjoyQs(1, 'first'), new MakeEffortQs(1, 'first')],
+    p.holeInOne_timeline = {
+        timeline: [holeInOne, new MakeFlowQs('Hole in One'), new MakeEnjoyQs('Hole in One'), new MakeEffortQs('Hole in One')],
     };
 
     // timeline: second wheel
-    p.wheel_2 = {
-        timeline: [flanker_timeline_p2, attnChk2, flanker_timeline_2, new MakeFlowQs(2, 'second'), new MakeEnjoyQs(2, 'second'), new MakeEffortQs(2, 'second')],
+    p.leftOrRight_timeline = {
+        timeline: [flanker_timeline_p1, attnChk1, flanker_timeline_1, new MakeFlowQs('Left or Right'), new MakeEnjoyQs('Left or Right'), new MakeEffortQs('Left or Right')],
     };
 
    /*
@@ -851,6 +892,6 @@ const exp = (function() {
 
 }());
 
-const timeline = [exp.consent, exp.intro_1, exp.wheel_1, exp.intro_2, exp.wheel_2, exp.demographics, exp.save_data];
+const timeline = [exp.consent, exp.intro_holeInOne, exp.holeInOne_timeline, exp.intro_1, exp.leftOrRight_timeline, exp.demographics, exp.save_data];
 
 jsPsych.run(timeline);
