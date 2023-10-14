@@ -284,9 +284,9 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<div style="width:800px; text-align:center"><p>If you receive a 5-cent bonus you'll see:</p></div>
-                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.png">
+                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.jpg">
                             <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
-                                <span style="font-size: 75px; line-height:90px">+5</span>
+                                <span style="font-size: 95px; line-height:90px">+5</span>
                             </div>`
                     },
                 ],
@@ -297,7 +297,7 @@ const exp = (function() {
                         prompt: `<div style="width:800px; text-align:center"><p>If you don't receive a 5-cent bonus, you'll see:</p></div>
                             <div style="height:200px"></div>
                             <div class="outcome-text" style="text-align: center; color: black; font-weight: bold">
-                                <span style="font-size: 75px; line-height:90px">+0</span>
+                                <span style="font-size: 95px; line-height:90px">+0</span>
                             </div>`
                     },
                 ],
@@ -448,7 +448,7 @@ const exp = (function() {
             type: jsPsychFlanker,
             stimulus: settings.effort[round],
             response_ends_trial: false,
-            trial_duration: 5000,
+            trial_duration: 3500,
             choices: ['q', 'p'],
             on_finish: function(data) {
                 score_feedback = data.score;
@@ -461,7 +461,7 @@ const exp = (function() {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
                 let multiplier, feedbackText;
-                if (score_feedback > 4) {
+                if (score_feedback > 1) {
                     multiplier = m_array[trial];
                     win = e_array[trial] == "reward";
                 } else {
@@ -469,7 +469,7 @@ const exp = (function() {
                     win = false;
                 };
                 let delta = Math.floor(Math.random() * 4 + 1) * multiplier;
-                target_score = Math.max(0, score_feedback + delta);
+                target_score = Math.max(1, score_feedback + delta);
                 if (multiplier == 1) {
                     feedbackText = `<p style="text-align:center; font-size: 35px; color: black"><b>You missed the target score</b></p>`
                 } else {
@@ -503,13 +503,13 @@ const exp = (function() {
                     html = `<div class="outcome-container-win">
                                 <img src="/mentalEffort_flanker/img/coins.jpg">
                                 <div class="outcome-text">
-                                    <span style="font-size: 75px; line-height:90px">+5</span>
+                                    <span style="font-size: 95px; line-height:90px">+5</span>
                                 </div>                            
                             </div>`
                 } else {
                     html = `<div class="outcome-container-lose">
                                 <div class="outcome-text">
-                                    <span style="font-size: 75px; line-height:90px">+0</span>
+                                    <span style="font-size: 95px; line-height:90px">+0</span>
                                 </div>
                             </div>`
                 };
