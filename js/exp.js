@@ -202,7 +202,7 @@ const exp = (function() {
                         prompt: `<p>If you score 10 points before time runs out, you'll see that you won the round:</p>
                         <div class="outcome-container-lose">
                         <div class="your-score">Your Score:<br><br><span style="color:green; font-weight:bold">10</span></div>
-                        <div class="trophy"><img src="/mentalEffort-flanker/img/trophy.png" height="250px"></div>
+                        <div class="trophy"><img src="/mentalEffort_flanker/img/trophy.png" height="250px"></div>
                         </div>`
                     },
                 ],
@@ -419,7 +419,7 @@ const exp = (function() {
 
                 } else {
                     color = 'green'; 
-                    feedbackContent = `<div class="trophy"><img src="/mentalEffort-flanker/img/trophy.png" height="250px"></div>`
+                    feedbackContent = `<div class="trophy"><img src="/mentalEffort_flanker/img/trophy.png" height="250px"></div>`
                 }
                 let html = `<div class="outcome-container-lose">
                 <div class="your-score">Your Score:<br><br><span style="color:${color}; font-weight:bold">${score_feedback}</span></div>
