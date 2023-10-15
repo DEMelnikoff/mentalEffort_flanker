@@ -6,8 +6,8 @@ const exp = (function() {
     let p = {};
 
     let settings = {
-        hitRates: [[.5, .8], [.8, .5]][Math.floor(Math.random() * 2)],
-        adjustment: [0, .3][Math.floor(Math.random() * 2)],
+        hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
+        adjustment: [0, .4][Math.floor(Math.random() * 2)],
         nTrials: 40,
     };
 
@@ -23,19 +23,16 @@ const exp = (function() {
     const getArrays = function(settings, round) {
 
         // shuffle function
-        function shuffle(obj1, obj2) {
+        function shuffle(obj1) {
           let index = obj1.length;
-          let rnd, tmp1, tmp2;
+          let rnd, tmp1;
 
           while (index) {
             rnd = Math.floor(Math.random() * index);
             index -= 1;
             tmp1 = obj1[index];
-            tmp2 = obj2[index];
             obj1[index] = obj1[rnd];
-            obj2[index] = obj2[rnd];
             obj1[rnd] = tmp1;
-            obj2[rnd] = tmp2;
           }
         };
 
@@ -47,35 +44,16 @@ const exp = (function() {
         let winArray = Array(nWins).fill(-1);
         let lossArray = Array(nLoss).fill(1);
         let m_array = winArray.concat(lossArray);
-        let m_array_last = m_array.pop(); // remove last element to ensure a loss on the final trial
-
-        // create array of E states
-        let winArray_reward = Array( (3 * nWins) / 4  ).fill('reward');
-        let winArray_noReward = Array( nWins / 4 ).fill('no_reward');
-        let lossArray_reward = Array( nLoss / 4 ).fill('reward');
-        let lossArray_noReward = Array( (3 * nLoss) / 4 ).fill('no_reward');
-        let e_array = winArray_reward.concat(winArray_noReward, lossArray_reward, lossArray_noReward);
-        let e_array_last = e_array.pop(); // remove last element to ensure no reward on final trial
 
         // shuffle arrays and add back final trial
-        shuffle(m_array, e_array);
-        m_array.push(m_array_last);
-        e_array.push(e_array_last);
+        shuffle(m_array);
 
-        return [m_array, e_array];
+        return m_array;
     };
 
-    const [m_array_1, e_array_1] = getArrays(settings, 0);
-    const [m_array_2, e_array_2] = getArrays(settings, 1);
+    const m_array_1 = getArrays(settings, 0);
+    const m_array_2 = getArrays(settings, 1);
     const m_array = m_array_1.concat(m_array_2);
-    const e_array = e_array_1.concat(e_array_2);
-
-    let nCongruent = 0;
-    for (let i = 0; i < m_array_1.length; i++) {
-        if (m_array[i] == -1 && e_array[i] == "reward" || m_array[i] == 1 && e_array[i] == "no_reward") {
-            nCongruent++;
-        }
-    };
 
     let text = {};
 
@@ -115,7 +93,7 @@ const exp = (function() {
         let firstOrSecond;
         (round == 1) ? firstOrSecond = 'first' : firstOrSecond = 'second';
 
-        let correctAnswers_1 = [`A score equal to or greater than the target score (which is not revealed until the end of the round)`, `75%`, `25%`];
+        let correctAnswers_1 = [`10`];
         let correctAnswers_2;
 
         if (settings.effort[0] == 'easy' && round == 1 || settings.effort[1] == 'easy' && round == 2) {
@@ -138,21 +116,11 @@ const exp = (function() {
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>What score is required to win a round?</div>", 
                         name: `attnChk1`, 
-                        options: [`A score of 10`, `A score of 30`, `A score equal to or greater than the target score (which is not revealed until the end of the round)`, `A score exactly equal to the target score (which is not revealed until the end of the round)`],
-                    },
-                    {
-                        prompt: "<div style='color: rgb(109, 112, 114)'>If you complete a round, what are your chances of receiving a 5-cent bonus?</div>", 
-                        name: `attnChk2`, 
-                        options: [`25%`, `50%`, `75%`, `100%`],
-                    },
-                    {
-                        prompt: "<div style='color: rgb(109, 112, 114)'>If you fail to complete a round, what are your chances of receiving a 5-cent bonus?</div>", 
-                        name: `attnChk3`, 
-                        options: [`25%`, `50%`, `75%`, `100%`],
+                        options: [`5`, `10`, `15`, `20`],
                     },
                     {
                         prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of Left or Right?</div>`, 
-                        name: `attnChk4`, 
+                        name: `attnChk2`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
                 ],
@@ -171,12 +139,12 @@ const exp = (function() {
                 questions: [
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
-                        name: `attnChk4`, 
+                        name: `attnChk3`, 
                         options: [`In the second version of Left or Right, I must indicate the direction of the middle arrow only.`, `In the second version of Left or Right, all arrows will point in the same direction.`],
                     },
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
-                        name: `attnChk2`, 
+                        name: `attnChk4`, 
                         options: [`In the second version of Left or Right, the target scores will be lower.`, `In the second version of Left or Right, the target scores will be higher.`],
                     },
                 ],
@@ -223,83 +191,37 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>Practice is now complete. Soon, you'll complete Left or Right.</p>
-                        <p><b>During Left or Right, you'll be able to earn bonus money!</b></p>
-                        <p>To learn how to win bonus money, continue to the next screen.</p>`
+                        prompt: `<p>Practice is now complete.</p>
+                        <p><b>During Left or Right, your goal is to win as many rounds as possible!</p></p>To win a round, you must score 10 points before time runs out.</b></p>
+                        <p>To see what happens when you win a round, proceed to the following page.</p>`
                     },
                 ],
                 [
                     {
                         type: 'html',
-                        prompt: `<p>During Left or Right, each round will have a different <b>target score</b>. 
-                        If you reach the target score before time runs out, that round will be marked as "complete."</p>
-                        <p>For example, if the target score is 20, you need a score of 20 or more to complete the round.</p>
-                        <p>The target score is not revealed until the end of each round.</p>
-                        <ul>
-                            <li>Completing a round gives you a <b>75%</b> chance of earning a 5-cent bonus.</li>
-                            <li>Failing to complete a round gives you a <b>25%</b> chance of earning a 5-cent bonus.</li>
-                        </ul>
-                        <p>For an illustration of how to earn bonus money, proceed to the following pages.</p>`
+                        prompt: `<p>If you score 10 points before time runs out, you'll see that you won the round:</p>
+                        <div class="outcome-container-lose">
+                        <div class="your-score">Your Score:<br><br><span style="color:green; font-weight:bold">10</span></div>
+                        <div class="trophy"><img src="/mentalEffort-flanker/img/trophy.png" height="250px"></div>
+                        </div>`
                     },
                 ],
                 [
                     {
                         type: 'html',
-                        prompt: `<p>If you score <b>18</b> and the target score is <b>20</b>, you'll see:</p>
-                        <p style="text-align:center; font-size: 35px; color: black"><b>You missed the target score</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>18</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
+                        prompt: `<p>If you score less than 10 points when time runs out, you'll see that you lost the round...</p>`
                     },
                 ],
                 [
                     {
                         type: 'html',
-                        prompt: `<p>Missing the target score give you a <b>25%</b> chance of receiving a 5-cent bonus.</p>
-                        <p style="text-align:center; font-size: 35px; color: black"><b>You missed the target score</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>18</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
+                        prompt: `<p>For example, if you score only 8 points, you'll see:</p>
+                        <div class="outcome-container-lose">
+                        <div class="your-score">Your Score:<br><br><span style="color:red; font-weight:bold">8</span></div>
+                        <div class="flanker-text" style="color:red">You lost!</div>
+                        </div>`
                     },
                 ],
-                [
-                    {
-                        type: 'html',
-                        prompt: `<p>If you score <b>22</b> and the target score is <b>20</b>, you'll see:</p>
-                        <p style="text-align:center; font-size: 35px; color: red"><b>You reached the target score</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>22</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
-                    },
-                ],
-                [
-                    {
-                        type: 'html',
-                        prompt: `<p>Reaching the target score gives you a <b>75%</b> chance of receiving a 5-cent bonus.</p>
-                        <p style="text-align:center; font-size: 35px; color: red"><b>You reached the target score</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Your Score: <b>22</b></p>
-                        <p style="text-align:center; font-size: 35px; color: black">Target Score: <b>20</b></p>`
-                    },
-                ],
-                [
-                    {
-                        type: 'html',
-                        prompt: `<div style="width:800px; text-align:center"><p>If you receive a 5-cent bonus you'll see:</p></div>
-                            <img style="display: block; margin-left: auto; margin-right: auto" src="/mentalEffort_flanker/img/coins.jpg">
-                            <div class="outcome-text" style="text-align: center; color: #85BB65; font-weight: bold; text-shadow: -1px 1px 2px #000, 1px 1px 2px #000, 1px -1px 0 #000, -1px -1px 0 #000">
-                                <span style="font-size: 95px; line-height:90px">+5</span>
-                            </div>`
-                    },
-                ],
-
-                [
-                    {
-                        type: 'html',
-                        prompt: `<div style="width:800px; text-align:center"><p>If you don't receive a 5-cent bonus, you'll see:</p></div>
-                            <div style="height:200px"></div>
-                            <div class="outcome-text" style="text-align: center; color: black; font-weight: bold">
-                                <span style="font-size: 95px; line-height:90px">+0</span>
-                            </div>`
-                    },
-                ],
-
             ],
             button_label_finish: 'Next',
         };
@@ -446,6 +368,7 @@ const exp = (function() {
 
     let score_feedback;
     let target_score;
+    let feedbackText;
     let win;
     let trial = 0;
     let total_wins = 0;
@@ -455,16 +378,20 @@ const exp = (function() {
 
         const fixation = {
             type:jsPsychHtmlKeyboardResponse,
-            stimulus: `<div class="outcome-container-lose"><div class="outcome-text" style="font-size:75px; font-weight: normal"><p>+</p></div></div>`,
+            stimulus: `<div class="outcome-container-lose"><div class="flanker-text" style="font-size:75px; font-weight: normal"><p>+</p></div></div>`,
             choices: "NO_KEYS",
             trial_duration: 500,
         };
 
         const flanker = {
             type: jsPsychFlanker,
-            stimulus: settings.effort[round],
+            stimulus: function() {
+                let effort = settings.effort[round];
+                let outcome = m_array[trial];
+                return [effort, outcome];
+            },
             response_ends_trial: false,
-            trial_duration: 3500,
+            trial_duration: 7500,
             choices: ['q', 'p'],
             on_finish: function(data) {
                 score_feedback = data.score;
@@ -476,10 +403,10 @@ const exp = (function() {
         const feedback = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
-                let multiplier, feedbackText;
+                let multiplier, feedbackContent, color;
                 if (score_feedback > 1) {
                     multiplier = m_array[trial];
-                    win = e_array[trial] == "reward";
+                    win = m_array[trial] == -1;
                 } else {
                     multiplier = 1;
                     win = false;
@@ -487,16 +414,17 @@ const exp = (function() {
                 let delta = Math.floor(Math.random() * 4 + 1) * multiplier;
                 target_score = Math.max(1, score_feedback + delta);
                 if (multiplier == 1) {
-                    feedbackText = `<p style="text-align:center; font-size: 35px; color: black"><b>You missed the target score</b></p>`
+                    color = 'red'
+                    feedbackContent = `<div class="flanker-text" style="color:${color}">You lost!</div>`
+
                 } else {
-                    feedbackText = `<p style="text-align:center; font-size: 35px; color: red"><b>You reached the target score</b></p>`
+                    color = 'green'; 
+                    feedbackContent = `<div class="trophy"><img src="/mentalEffort-flanker/img/trophy.png" height="250px"></div>`
                 }
-                let html = `<div class="flanker-container">
-                    ${feedbackText}
-                    <div class="feedback-text">
-                    <p>Your Score: <strong>${score_feedback}</strong></p>
-                    <p>Target Score: <strong>${target_score}</strong></p>
-                    </div></div>`;
+                let html = `<div class="outcome-container-lose">
+                <div class="your-score">Your Score:<br><br><span style="color:${color}; font-weight:bold">${score_feedback}</span></div>
+                ${feedbackContent}
+                </div>`;
                 return html;
             },
             choices: "NO_KEYS",
@@ -511,36 +439,8 @@ const exp = (function() {
             },
         };
 
-        const outcome = {
-            type:jsPsychHtmlKeyboardResponse,
-            stimulus: function() {
-
-                if (win) {
-                    html = `<div class="outcome-container-win">
-                                <img src="/mentalEffort_flanker/img/coins.jpg">
-                                <div class="outcome-text">
-                                    <span style="font-size: 95px; line-height:90px">+5</span>
-                                </div>                            
-                            </div>`
-                } else {
-                    html = `<div class="outcome-container-lose">
-                                <div class="outcome-text">
-                                    <span style="font-size: 95px; line-height:90px">+0</span>
-                                </div>
-                            </div>`
-                };
-                return html;
-            },
-            choices: "NO_KEYS",
-            trial_duration: 2000,
-            on_finish: function(data) {
-                data.round = round + 1;
-                data.practice = isPractice;
-            },
-        };
-
         if (!isPractice) {
-            this.timeline = [fixation, flanker, feedback, outcome];
+            this.timeline = [fixation, flanker, feedback];
             this.repetitions = settings.nTrials;
         } else {
             this.timeline = [fixation, flanker];
@@ -677,7 +577,7 @@ const exp = (function() {
     const holeInOne = {
         type: dmPsychHoleInOne,
         stimulus: dmPsych.holeInOne.run,
-        total_shots: 20,  
+        total_shots: 12,  
         canvas_size: [475, 900],
         ball_color: 'white',
         ball_size: 10,
@@ -883,7 +783,7 @@ const exp = (function() {
     p.save_data = {
         type: jsPsychPipe,
         action: "save",
-        experiment_id: "ZaUKnYlV7G98",
+        experiment_id: "NiNMyKS2vTTK",
         filename: dmPsych.filename,
         data_string: ()=>jsPsych.data.get().csv()
     };

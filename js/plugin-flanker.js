@@ -71,6 +71,7 @@ var jsPsychFlanker = (function (jspsych) {
           let score = 0;
           let errors = 0;
           let target_idx;
+          let loss_index = 10 - Math.floor(Math.random() * 3 + 1);
 
           const createFlanker = (condition) => {
             let flanker_idx = Math.floor(Math.random() * 2);
@@ -86,8 +87,10 @@ var jsPsychFlanker = (function (jspsych) {
             return flanker.replace('x', target);
           };
 
-          let stim = createFlanker(trial.stimulus);
-          let new_html = `<div class="flanker-container"><div class="score">Your Score:<br><br><b>${score}</b></div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
+          let stim = createFlanker(trial.stimulus[0]);
+          let new_html = `<div class="outcome-container-lose">
+          <div class="your-score">Your Score:<br><br><b>${score}</b></div>
+          <div class="flanker-symbol">${stim}</div></div>`;
           // add prompt
           if (trial.prompt !== null) {
               new_html += trial.prompt;
@@ -130,8 +133,11 @@ var jsPsychFlanker = (function (jspsych) {
                 };
                 errors++;
               };
-              stim = createFlanker(trial.stimulus);
-              new_html = `<div class="flanker-container"><div class="score">Your Score:<br><br><b>${score}</b></div><div class="flanker" id="jspsych-html-keyboard-response-stimulus">${stim}</div></div>`;
+              stim = createFlanker(trial.stimulus[0]);
+              new_html = `<div class="outcome-container-lose">
+              <div class="your-score">Your Score:<br><br><b>${score}</b></div>
+              <div class="flanker-symbol">${stim}</div>
+              </div>`;
               display_element.innerHTML = new_html;
               // only record the first response
               if (response.key == null) {
@@ -140,6 +146,13 @@ var jsPsychFlanker = (function (jspsych) {
               if (trial.response_ends_trial) {
                   end_trial();
               }
+
+              if (trial.stimulus[1] == -1 & score == 10) {
+                end_trial();
+              } else if (trial.stimulus[1] == 1 & score == loss_index) {
+                this.jsPsych.pluginAPI.setTimeout(end_trial, 175)
+              }
+
           };
           // start the response listener
           if (trial.choices != "NO_KEYS") {
@@ -158,8 +171,8 @@ var jsPsychFlanker = (function (jspsych) {
               }, trial.stimulus_duration);
           }
           // end trial if trial_duration is set
-          if (trial.trial_duration !== null) {
-              this.jsPsych.pluginAPI.setTimeout(end_trial, trial.trial_duration);
+          if (trial.stimulus_duration !== null) {
+             this.jsPsych.pluginAPI.setTimeout(end_trial, trial.trial_duration);
           }
       }
       simulate(trial, simulation_mode, simulation_options, load_callback) {
