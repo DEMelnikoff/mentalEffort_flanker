@@ -155,8 +155,8 @@ var dmPsychHoleInOne = (function (jspsych) {
         var trial_data = {
           totalTrials: dmPsych.holeInOne.data.totalTrials,
           totalScore: dmPsych.holeInOne.data.totalScore,
-          xLocBall: dmPsych.holeInOne.data.ballX,
-          yLocBall: dmPsych.holeInOne.data.ballY
+          //xLocBall: dmPsych.holeInOne.data.ballX,
+          //yLocBall: dmPsych.holeInOne.data.ballY
         };
 
         // clear the display
