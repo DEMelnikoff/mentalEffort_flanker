@@ -9,6 +9,7 @@ const exp = (function() {
         hitRates: [[.5, .9], [.9, .5]][Math.floor(Math.random() * 2)],
         adjustment: [0, .4][Math.floor(Math.random() * 2)],
         nTrials: 40,
+        colors: [['purple', 'orange'], ['orange', 'purple']][Math.floor(Math.random() * 2)],
     };
 
     settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
@@ -18,6 +19,15 @@ const exp = (function() {
         settings.effort = ['easy', 'hard'];
     } else {
         settings.effort = ['hard', 'easy'];
+    };
+
+
+    if (settings.colors[0] == 'purple') {
+        settings.gameName_1 = `<span class='purple-game'>Purple Game</span>`;
+        settings.gameName_2 = `<span class='orange-game'>Orange Game</span>`;
+    } else {
+        settings.gameName_1 = `<span class='orange-game'>Orange Game</span>`;
+        settings.gameName_2 = `<span class='purple-game'>Purple Game</span>`;
     };
 
     const getArrays = function(settings, round) {
@@ -58,20 +68,22 @@ const exp = (function() {
     let text = {};
 
     if (settings.effort[0] == 'hard') {
-        text.example_1 = ">><>>";
+        text.example_1 = `<span style="color: ${settings.colors[0]}">>><>></span>`;
         text.arrowOrArrows = 'middle arrow';
         text.pointOrPoints = 'points';
-        text.exception1 = `<p>For each cue, the middle arrow will always point in the same direction as the other four arrows (e.g., <<<<<).</p>
+        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
+        <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.colors[1]}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all five arrows are pointing.</p>`;
-        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>higher</b> than they were in the first version. Therefore, higher scores will be required to complete each round.</p>`;
+        text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>less time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you'll need to respond faster to win each round.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
-        text.example_1 = "<<<<<";
+        text.example_1 = `<span style="color: ${settings.colors[0]}"><<<<<</span>`;
         text.arrowOrArrows = 'arrows';
         text.pointOrPoints = 'point';
-        text.exception1 = `<p>For each cue, you must indicate the direction of the <b>middle arrow only</b>.</p>
-        <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <<<<<), and other times it will point in the opposite direction (e.g., <<><<). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
-        text.exception2 = `<p>In the second version of Left or Right, the target scores will be <b>lower</b> than they were in the first version. Therefore, lower scores will be required win each round.</p>`;
+        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
+        <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
+        <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.colors[1]}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.colors[1]}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
+        text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>more time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you won't need to respond quite as fast to win each round.</p>`;
     };
 
     jsPsych.data.addProperties({
@@ -90,18 +102,17 @@ const exp = (function() {
 
     function MakeAttnChk(settings, round) {
 
-        let firstOrSecond;
-        (round == 1) ? firstOrSecond = 'first' : firstOrSecond = 'second';
+        let gameName = (round == 1) ? settings.gameName_1 : settings.gameName_2
 
         let correctAnswers_1 = [`10`];
         let correctAnswers_2;
 
         if (settings.effort[0] == 'easy' && round == 1 || settings.effort[1] == 'easy' && round == 2) {
             correctAnswers_1.push(`For each cue, I must indicate the direction of the arrows.`);
-            correctAnswers_2 = [`In the second version of Left or Right, all arrows will point in the same direction.`, `In the second version of Left or Right, the target scores will be higher.`];
+            correctAnswers_2 = [`In the ${settings.gameName_2}, all arrows will point in the same direction.`, `In the ${settings.gameName_2}, I'll have less time to reach the target score.`];
         } else if (settings.effort[0] == 'hard' && round == 1 || settings.effort[1] == 'hard' && round == 2) {
             correctAnswers_1.push(`For each cue, I must indicate the direction of the middle arrow only.`);
-            correctAnswers_2 = [`In the second version of Left or Right, I must indicate the direction of the middle arrow only.`, `In the second version of Left or Right, the target scores will be lower.`];
+            correctAnswers_2 = [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `In the ${settings.gameName_2}, I'll have more time to reach the target score.`];
         };
 
         let attnChk;
@@ -119,7 +130,7 @@ const exp = (function() {
                         options: [`5`, `10`, `15`, `20`],
                     },
                     {
-                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of Left or Right?</div>`, 
+                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${settings.gameName_1}?</div>`, 
                         name: `attnChk2`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
@@ -140,12 +151,12 @@ const exp = (function() {
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
                         name: `attnChk3`, 
-                        options: [`In the second version of Left or Right, I must indicate the direction of the middle arrow only.`, `In the second version of Left or Right, all arrows will point in the same direction.`],
+                        options: [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `In the ${settings.gameName_2}, all arrows will point in the same direction.`],
                     },
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
                         name: `attnChk4`, 
-                        options: [`In the second version of Left or Right, the target scores will be lower.`, `In the second version of Left or Right, the target scores will be higher.`],
+                        options: [`In the ${settings.gameName_2}, I'll have less time to reach the target score.`, `In the ${settings.gameName_2}, I'll have more time to reach the target score.`],
                     },
                 ],
                 scale_width: 500,
@@ -192,7 +203,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p>Practice is now complete.</p>
-                        <p><b>During Left or Right, your goal is to win as many rounds as possible!</p></p>To win a round, you must score 10 points before time runs out.</b></p>
+                        <p><b>During the ${settings.gameName_1}, your goal is to win as many rounds as possible!</p></p>To win a round, you must score 10 points before time runs out.</b></p>
                         <p>To see what happens when you win a round, proceed to the following page.</p>`
                     },
                 ],
@@ -232,7 +243,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>Practice is now complete. Soon, you'll play the second version of the Left or Right.</p>
+                        prompt: `<p>Practice is now complete. Soon, you'll play the ${settings.gameName_2}.</p>
                         ${text.exception2}`
                     },
                 ],
@@ -246,7 +257,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>You're now ready to play Left or Right.</p>
+                        prompt: `<p>You're now ready to play the ${gameName}.</p>
                         <p>To begin, continue to the next screen.</p>`
                     },
                 ],
@@ -259,8 +270,8 @@ const exp = (function() {
             this.timeline = [practiceComplete_1, instLoop, readyToPlay];
         } else if (round == 2) {
             this.timeline = [practiceComplete_2, instLoop, readyToPlay];
-        }
-    }
+        };
+    };
 
 
     p.consent = {
@@ -269,7 +280,7 @@ const exp = (function() {
         cont_btn: "advance",
     };
 
-    p.intro_holeInOne = {
+    p.intro_task = {
         type: jsPsychSurvey,
         pages: [
             [
@@ -278,8 +289,8 @@ const exp = (function() {
                     prompt: `<p><strong>What makes some activities more immersive and engaging than others?</strong></p>
                     <p>We're interested in why people feel effortlessly engaged in some activities (such as engrossing video games), but struggle to focus on other activities.</p>
                     <p>To help us, you'll play two different games. After each game, you'll report how immersed and engaged you felt.</p>
-                    <p>The first game that you'll play is called Hole in One.</p>
-                    <p>To learn about and play Hole in One, continue to the next screen.</p></p>`
+                    <p>The first game that you'll play is called the ${settings.gameName_1}.</p>
+                    <p>To learn about and play the ${settings.gameName_1}, continue to the next screen.</p></p>`
                 },
 
             ],
@@ -294,16 +305,19 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p>Hole in One is now complete!</p>
-                    <p>Next, you'll play the second of two games. Specifically, you'll play a game called <b>Left or Right</b>.</p>
-                    <p>Continue to learn about Left or Right.</p>`
+                    prompt: `<p><strong>What makes some activities more immersive and engaging than others?</strong></p>
+                    <p>We're interested in why people feel effortlessly engaged in some activities (such as engrossing video games), but struggle to focus on other activities.</p>
+                    <p>To help us, you'll play two different games. After each game, you'll report how immersed and engaged you felt.</p>
+                    <p>The first game that you'll play is called the ${settings.gameName_1}.</p>
+                    <p>To learn about and play the ${settings.gameName_1}, continue to the next screen.</p></p>`
                 },
+
             ],
             [
                 {
                     type: 'html',
-                    prompt: `<p>Left or Right takes place over multiple rounds.</p>
-                    <p>In each round, you'll see a series of cues composed of five arrows (e.g., ${text.example_1}).</p>
+                    prompt: `<p>The ${settings.gameName_1} takes place over multiple rounds.</p>
+                    <p>In each round, you'll see a series of cues composed of five ${settings.colors[0]} arrows (e.g., ${text.example_1}).</p>
                     For each cue, you must indicate the <b>direction of the ${text.arrowOrArrows}</b>:
                     <ul>
                         <li>If the ${text.arrowOrArrows} ${text.pointOrPoints} left, you must press Q on your keyboard.</li>
@@ -319,7 +333,7 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p>To get a feel for Left or Right, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
+                    prompt: `<p>To get a feel for the ${settings.gameName_1}, you'll complete multiple practice rounds. During the practice rounds, your goal is to achieve the highest score possible.</p>
                     <p>Continue to start practicing.</p>`,
                 }
             ],
@@ -334,16 +348,17 @@ const exp = (function() {
             [
                 {
                     type: 'html',
-                    prompt: `<p>The first version of Left or Right is now complete!</p>
-                    <p>Continue to learn more about the second version.</p>`
+                    prompt: `<p>The ${settings.gameName_1} is now complete!</p>
+                    <p>Next, you'll play the second of two games. Specifically, you'll play the ${settings.gameName_2}.</p>
+                    <p>Continue to learn about the ${settings.gameName_2}.</p>`
                 },
             ],
             [
                 {
                     type: 'html',
-                    prompt: `<p>The second version of Left or Right is identical to the first version with one exception.</p>
+                    prompt: `<p>The ${settings.gameName_2} is identical to the ${settings.gameName_1} with two exceptions.</p>
                     ${text.exception1}
-                    <p>To practice the second version of Left or Right, continue to the next page.</p>`,
+                    <p>To practice the ${settings.gameName_2}, continue to the next page.</p>`,
                 }
             ],
         ],
@@ -393,6 +408,7 @@ const exp = (function() {
             response_ends_trial: false,
             trial_duration: 7500,
             choices: ['q', 'p'],
+            color: settings.colors[round],
             on_finish: function(data) {
                 score_feedback = data.score;
                 data.round = round + 1;
@@ -467,33 +483,33 @@ const exp = (function() {
     const zeroToALot = ['0<br>A little', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10<br>A lot'];
 
     // constructor functions
-    function MakeFlowQs(game) {
+    function MakeFlowQs(game, time) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
-        <p>Thank you for completing ${game}!</p>
-        <p>During ${game}, to what extent did you feel <b>immersed</b> and <b>engaged</b> in what you were doing?</p>
+        <p>Thank you for completing the ${game}!</p>
+        <p>During the ${game}, to what extent did you feel <b>immersed</b> and <b>engaged</b> in what you were doing?</p>
         <p>Report the degree to which you felt immersed and engaged by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>absorbed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${game}, how <strong>absorbed</strong> did you feel in what you were doing?</div>`,
                 name: `absorbed`,
                 labels: ["0<br>Not very absorbed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More absorbed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>immersed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${game}, how <strong>immersed</strong> did you feel in what you were doing?</div>`,
                 name: `immersed`,
                 labels: ["0<br>Not very immersed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More immersed than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>engaged</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${game}, how <strong>engaged</strong> did you feel in what you were doing?</div>`,
                 name: `engaged`,
                 labels: ["0<br>Not very engaged", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engaged than I've ever felt"],
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>During ${game}, how <strong>engrossed</strong> did you feel in what you were doing?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>During the ${game}, how <strong>engrossed</strong> did you feel in what you were doing?</div>`,
                 name: `engrossed`,
                 labels: ["0<br>Not very engrossed", '1', '2', '3', '4', '5', '6', '7', '8', '9', "10<br>More engrossed than I've ever felt"],
                 required: true,
@@ -501,47 +517,47 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: game};
+        this.data = {game: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEnjoyQs(game) {
+    function MakeEnjoyQs(game, time) {
         this.type = jsPsychSurveyLikert;
         this.preamble = `<div style='padding-top: 50px; width: 850px; font-size:16px; color:rgb(109, 112, 114)'>
 
-        <p>Below are a few more questions about ${game}.</p>
+        <p>Below are a few more questions about the ${game}.</p>
 
         <p>Instead of asking about immersion and engagement, these questions ask about <strong>enjoyment</strong>.<br>
-        Report how much you <strong>enjoyed</strong> ${game} by answering the following questions.</p></div>`;
+        Report how much you <strong>enjoyed</strong> the ${game} by answering the following questions.</p></div>`;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>enjoy</strong> playing the ${game}?</div>`,
                 name: `enjoyable`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>like</strong> playing the ${game}?</div>`,
                 name: `like`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much did you <strong>dislike</strong> playing the ${game}?</div>`,
                 name: `dislike`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How much <strong>fun</strong> did you have playing the ${game}?</div>`,
                 name: `fun`,
                 labels: zeroToALot,
                 required: true,
             },
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <strong>entertaining</strong> was the ${game}?</div>`,
                 name: `entertaining`,
                 labels: zeroToExtremely,
                 required: true,
@@ -549,17 +565,17 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: game};
+        this.data = {game: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
     };
 
-    function MakeEffortQs(game) {
+    function MakeEffortQs(game, time) {
         this.type = jsPsychSurveyLikert;
         this.questions = [
             {
-                prompt: `<div style='color:rgb(109, 112, 114)'>How <b>effortful</b> was ${game}?</div>`,
+                prompt: `<div style='color:rgb(109, 112, 114)'>How <b>effortful</b> was the ${game}?</div>`,
                 name: `effort`,
                 labels: zeroToALot,
                 required: true,
@@ -567,44 +583,20 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: game};
+        this.data = {game: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);      
         };
     };
 
 
-    const holeInOne = {
-        type: dmPsychHoleInOne,
-        stimulus: dmPsych.holeInOne.run,
-        total_shots: 12,  
-        canvas_size: [475, 900],
-        ball_color: 'white',
-        ball_size: 10,
-        ball_xPos: .13,
-        ball_yPos: .5,
-        wall_width: 75,
-        wall_color: '#797D7F',
-        wall_xPos: .9,
-        hole_size: 75,
-        friction: .02,
-        tension: .01,
-        prompt: `<div class='instructions'>
-
-        <p><strong>Hole in One</strong>. The goal of Hole in One is to shoot the ball through the hole.<br>
-        Follow the instructions in the game area, then play Hole in One. 
-        We'll let you know when time is up.</p></div>`,
-        data: {game: 'holeInOne'}
-    };
-
-    // timeline: first wheel
-    p.holeInOne_timeline = {
-        timeline: [holeInOne, new MakeFlowQs('Hole in One'), new MakeEnjoyQs('Hole in One'), new MakeEffortQs('Hole in One')],
-    };
-
     // timeline: second wheel
-    p.leftOrRight_timeline = {
-        timeline: [flanker_timeline_p1, attnChk1, flanker_timeline_1, new MakeFlowQs('Left or Right'), new MakeEnjoyQs('Left or Right'), new MakeEffortQs('Left or Right')],
+    p.leftOrRight_timeline_1 = {
+        timeline: [flanker_timeline_p1, attnChk1, flanker_timeline_1, new MakeFlowQs(settings.gameName_1, 1), new MakeEnjoyQs(settings.gameName_1, 1), new MakeEffortQs(settings.gameName_1, 1)],
+    };
+
+    p.leftOrRight_timeline_2 = {
+        timeline: [flanker_timeline_p2, attnChk2, flanker_timeline_2, new MakeFlowQs(settings.gameName_2, 2), new MakeEnjoyQs(settings.gameName_2, 2), new MakeEffortQs(settings.gameName_2, 2)],
     };
 
    /*
@@ -792,6 +784,6 @@ const exp = (function() {
 
 }());
 
-const timeline = [exp.consent, exp.intro_holeInOne, exp.holeInOne_timeline, exp.intro_1, exp.leftOrRight_timeline, exp.demographics, exp.save_data];
+const timeline = [exp.consent, exp.intro_1, exp.leftOrRight_timeline_1, exp.intro_2, exp.leftOrRight_timeline_2, exp.demographics, exp.save_data];
 
 jsPsych.run(timeline);

@@ -28,6 +28,11 @@ var jsPsychFlanker = (function (jspsych) {
               pretty_name: "Prompt",
               default: null,
           },
+          color: {
+              type: jspsych.ParameterType.HTML_STRING,
+              pretty_name: "Flanker color",
+              default: null,
+          },
           /**
            * How long to show the stimulus.
            */
@@ -90,7 +95,7 @@ var jsPsychFlanker = (function (jspsych) {
           let stim = createFlanker(trial.stimulus[0]);
           let new_html = `<div class="outcome-container-lose">
           <div class="your-score">Your Score:<br><br><b>${score}</b></div>
-          <div class="flanker-symbol">${stim}</div></div>`;
+          <div class="flanker-symbol" style="color: ${trial.color}">${stim}</div></div>`;
           // add prompt
           if (trial.prompt !== null) {
               new_html += trial.prompt;
@@ -136,7 +141,7 @@ var jsPsychFlanker = (function (jspsych) {
               stim = createFlanker(trial.stimulus[0]);
               new_html = `<div class="outcome-container-lose">
               <div class="your-score">Your Score:<br><br><b>${score}</b></div>
-              <div class="flanker-symbol">${stim}</div>
+              <div class="flanker-symbol" style="color: ${trial.color}">${stim}</div>
               </div>`;
               display_element.innerHTML = new_html;
               // only record the first response

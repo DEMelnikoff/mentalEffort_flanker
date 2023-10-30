@@ -710,3 +710,13 @@
     transform: translate(-50%, -50%); 
     width: 100%;
 }
+
+.orange-game {
+    font-weight: bold; 
+    color: orange
+}
+
+.purple-game {
+    font-weight: bold; 
+    color: purple
+}
