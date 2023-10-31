@@ -435,17 +435,7 @@ const exp = (function() {
         const feedback = {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function() {
-                let multiplier, feedbackContent, color;
-                if (score_feedback > 1) {
-                    multiplier = m_array[trial];
-                    win = m_array[trial] == -1;
-                } else {
-                    multiplier = 1;
-                    win = false;
-                };
-                let delta = Math.floor(Math.random() * 4 + 1) * multiplier;
-                target_score = Math.max(1, score_feedback + delta);
-                if (multiplier == 1) {
+                if (score_feedback < 10) {
                     color = 'red'
                     feedbackContent = `<div class="flanker-text" style="color:${color}">You lost!</div>`
 
@@ -463,8 +453,11 @@ const exp = (function() {
             trial_duration: 2000,
             on_finish: function(data) {
                 data.score = score_feedback;
-                data.target_score = target_score;
-                data.outcome = win;
+                if (score_feedback < 10) {
+                    data.outcome = "lose";
+                } else {
+                    data.outcome = "win";
+                }
                 trial++;
                 data.round = round + 1;
                 data.practice = isPractice;
