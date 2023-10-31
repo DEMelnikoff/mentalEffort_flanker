@@ -77,7 +77,7 @@ const exp = (function() {
         text.pointOrPoints = 'points';
         text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
         <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
-        <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all five arrows are pointing.</p>`;
+        <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all the arrows are pointing.</p>`;
         text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>less time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you'll need to respond faster to win each round.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
@@ -321,7 +321,7 @@ const exp = (function() {
                 {
                     type: 'html',
                     prompt: `<p>The ${settings.gameName_1} takes place over multiple rounds.</p>
-                    <p>In each round, you'll see a series of cues composed of five ${settings.colors[0]} arrows (e.g., ${text.example_1}).</p>
+                    <p>In each round, you'll see a series of cues composed of ${settings.colors[0]} arrows (e.g., ${text.example_1}).</p>
                     For each cue, you must indicate the <b>direction of the ${text.arrowOrArrows}</b>:
                     <ul>
                         <li>If the ${text.arrowOrArrows} ${text.pointOrPoints} left, you must press Q on your keyboard.</li>
