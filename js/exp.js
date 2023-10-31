@@ -24,10 +24,14 @@ const exp = (function() {
 
     if (settings.colors[0] == 'purple') {
         settings.gameName_1 = `<span class='purple-game'>Purple Game</span>`;
+        settings.hex_1 = 'purple';
         settings.gameName_2 = `<span class='orange-game'>Orange Game</span>`;
+        settings.hex_2 = '#FA6800'
     } else {
         settings.gameName_1 = `<span class='orange-game'>Orange Game</span>`;
+        settings.hex_1 = '#FA6800'
         settings.gameName_2 = `<span class='purple-game'>Purple Game</span>`;
+        settings.hex_2 = 'purple';
     };
 
     const getArrays = function(settings, round) {
@@ -68,21 +72,21 @@ const exp = (function() {
     let text = {};
 
     if (settings.effort[0] == 'hard') {
-        text.example_1 = `<span style="color: ${settings.colors[0]}">>><>></span>`;
+        text.example_1 = `<span style="color: ${settings.hex_1}">>><>></span>`;
         text.arrowOrArrows = 'middle arrow';
         text.pointOrPoints = 'points';
         text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
-        <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.colors[1]}"><<<<<</span>).</p>
+        <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all five arrows are pointing.</p>`;
         text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>less time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you'll need to respond faster to win each round.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
-        text.example_1 = `<span style="color: ${settings.colors[0]}"><<<<<</span>`;
+        text.example_1 = `<span style="color: ${settings.hex_1}"><<<<<</span>`;
         text.arrowOrArrows = 'arrows';
         text.pointOrPoints = 'point';
-        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
+        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.hex_2} arrows.</p>
         <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
-        <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.colors[1]}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.colors[1]}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
+        <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.hex_2}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
         text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>more time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you won't need to respond quite as fast to win each round.</p>`;
     };
 
@@ -203,7 +207,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p>Practice is now complete.</p>
-                        <p><b>During the ${settings.gameName_1}, your goal is to win as many rounds as possible!</p></p>To win a round, you must score 10 points before time runs out.</b></p>
+                        <p>During the ${settings.gameName_1}, your goal is to win as many rounds as possible!</p></p><b>To win a round, you must score 10 points before time runs out.</b></p>
                         <p>To see what happens when you win a round, proceed to the following page.</p>`
                     },
                 ],
@@ -408,7 +412,7 @@ const exp = (function() {
             response_ends_trial: false,
             trial_duration: 7500,
             choices: ['q', 'p'],
-            color: settings.colors[round],
+            color: [settings.hex_1, settings.hex_2][round],
             on_finish: function(data) {
                 score_feedback = data.score;
                 data.round = round + 1;
