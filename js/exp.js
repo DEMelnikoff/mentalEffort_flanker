@@ -65,6 +65,8 @@ const exp = (function() {
         return m_array;
     };
 
+    console.log(settings.hitRates);
+
     const m_array_1 = getArrays(settings, 0);
     const m_array_2 = getArrays(settings, 1);
     const m_array = m_array_1.concat(m_array_2);
