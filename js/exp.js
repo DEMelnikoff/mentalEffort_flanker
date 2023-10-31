@@ -143,6 +143,10 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_1);
                     data.totalErrors = totalErrors;
+                    if (totalErrors > 0) {
+                        jsPsych.data.addProperties({boot: true, bootReason: 'attention'});
+                        jsPsych.endExperiment("The experiment has ended early due to erroneous responding.");
+                    };
                 },
             };
         } else if (round == 2) {
@@ -167,6 +171,10 @@ const exp = (function() {
                 on_finish: (data) => {
                     const totalErrors = dmPsych.getTotalErrors(data, correctAnswers_2);
                     data.totalErrors = totalErrors;
+                    if (totalErrors > 0) {
+                        jsPsych.data.addProperties({boot: true, bootReason: 'attention'});
+                        jsPsych.endExperiment("The experiment has ended early due to erroneous responding.");
+                    };
                 },
             };
         }
@@ -417,6 +425,10 @@ const exp = (function() {
                 score_feedback = data.score;
                 data.round = round + 1;
                 data.practice = isPractice;
+                if (data.errors == 0 && data.score == 0) {
+                    jsPsych.data.addProperties({boot: true, bootReason: 'inactivity'});
+                    jsPsych.endExperiment("The experiment has ended early due to inactivity.");
+                };
             },
         };
 
@@ -521,7 +533,7 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: time};
+        this.data = {round: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
@@ -569,7 +581,7 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: time};
+        this.data = {round: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);
         };
@@ -587,7 +599,7 @@ const exp = (function() {
         ];
         this.randomize_question_order = false;
         this.scale_width = 700;
-        this.data = {game: time};
+        this.data = {round: time};
         this.on_finish = (data) => {
             dmPsych.saveSurveyData(data);      
         };
@@ -779,7 +791,7 @@ const exp = (function() {
     p.save_data = {
         type: jsPsychPipe,
         action: "save",
-        experiment_id: "NiNMyKS2vTTK",
+        experiment_id: "pVH9YcmXYBHO",
         filename: dmPsych.filename,
         data_string: ()=>jsPsych.data.get().csv()
     };

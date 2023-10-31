@@ -176,7 +176,7 @@ var jsPsychFlanker = (function (jspsych) {
               }, trial.stimulus_duration);
           }
           // end trial if trial_duration is set
-          if (trial.stimulus_duration !== null) {
+          if (trial.trial_duration !== null) {
              this.jsPsych.pluginAPI.setTimeout(end_trial, trial.trial_duration);
           }
       }
