@@ -420,7 +420,7 @@ const exp = (function() {
                 return [effort, outcome];
             },
             response_ends_trial: false,
-            trial_duration: 7500,
+            trial_duration: 10000,
             choices: ['q', 'p'],
             color: [settings.hex_1, settings.hex_2][round],
             on_finish: function(data) {
