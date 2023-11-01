@@ -81,7 +81,7 @@ const exp = (function() {
         <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all the arrows are pointing.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win fewer rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = `<span style="color: ${settings.hex_1}"><<<<<</span>`;
@@ -91,7 +91,7 @@ const exp = (function() {
         <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
         <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.hex_2}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win more rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     };
 
@@ -139,7 +139,7 @@ const exp = (function() {
                         options: [`5`, `10`, `15`, `20`],
                     },
                     {
-                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_1}, what percent of rounds are players expected to win?</div>`, 
+                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_1}, what percent of rounds are you expected to win?</div>`, 
                         name: `attnChk2`, 
                         options: [`10%`, `50%`, `90%`],
                     },
@@ -172,7 +172,7 @@ const exp = (function() {
                         options: [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `In the ${settings.gameName_2}, all arrows will point in the same direction.`],
                     },
                     {
-                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_2}, what percent of rounds are players expected to win?</div>`, 
+                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_2}, what percent of rounds are you expected to win?</div>`, 
                         name: `attnChk5`, 
                         options: [`10%`, `50%`, `90%`],
                     },
@@ -801,7 +801,7 @@ const exp = (function() {
     p.save_data = {
         type: jsPsychPipe,
         action: "save",
-        experiment_id: "pVH9YcmXYBHO",
+        experiment_id: "24gJDRWxlXPo",
         filename: dmPsych.filename,
         data_string: ()=>jsPsych.data.get().csv()
     };
