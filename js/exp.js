@@ -80,7 +80,8 @@ const exp = (function() {
         text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
         <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all the arrows are pointing.</p>`;
-        text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>less time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you'll need to respond faster to win each round.</p>`;
+        text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win fewer rounds than in the ${settings.gameName_1}.</p>
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = `<span style="color: ${settings.hex_1}"><<<<<</span>`;
@@ -89,7 +90,9 @@ const exp = (function() {
         text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.hex_2} arrows.</p>
         <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
         <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.hex_2}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
-        text.exception2 = `<p>In the ${settings.gameName_2}, you'll have <b>more time</b> to reach the target score than you had in the ${settings.gameName_1}. Therefore, you won't need to respond quite as fast to win each round.</p>`;
+        text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win more rounds than in the ${settings.gameName_1}.</p>
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`;
+
     };
 
     jsPsych.data.addProperties({
@@ -110,15 +113,15 @@ const exp = (function() {
 
         let gameName = (round == 1) ? settings.gameName_1 : settings.gameName_2
 
-        let correctAnswers_1 = [`10`];
+        let correctAnswers_1 = [`10`, `${settings.hitRates[0] * 100}%`];
         let correctAnswers_2;
 
         if (settings.effort[0] == 'easy' && round == 1 || settings.effort[1] == 'easy' && round == 2) {
             correctAnswers_1.push(`For each cue, I must indicate the direction of the arrows.`);
-            correctAnswers_2 = [`In the ${settings.gameName_2}, all arrows will point in the same direction.`, `In the ${settings.gameName_2}, I'll have less time to reach the target score.`];
+            correctAnswers_2 = [`In the ${settings.gameName_2}, all arrows will point in the same direction.`, `${settings.hitRates[1] * 100}%`];
         } else if (settings.effort[0] == 'hard' && round == 1 || settings.effort[1] == 'hard' && round == 2) {
             correctAnswers_1.push(`For each cue, I must indicate the direction of the middle arrow only.`);
-            correctAnswers_2 = [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `In the ${settings.gameName_2}, I'll have more time to reach the target score.`];
+            correctAnswers_2 = [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `${settings.hitRates[1] * 100}%`];
         };
 
         let attnChk;
@@ -136,8 +139,13 @@ const exp = (function() {
                         options: [`5`, `10`, `15`, `20`],
                     },
                     {
-                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${settings.gameName_1}?</div>`, 
+                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_1}, what percent of rounds are players expected to win?</div>`, 
                         name: `attnChk2`, 
+                        options: [`10%`, `50%`, `90%`],
+                    },
+                    {
+                        prompt: `<div style='color: rgb(109, 112, 114)'>Which statement best describes the rules of the ${settings.gameName_1}?</div>`, 
+                        name: `attnChk3`, 
                         options: [`For each cue, I must indicate the direction of the arrows.`, `For each cue, I must indicate the direction of the middle arrow only.`, `For each cue, I must indicate the color of the arrows.`, `For each cue, I must indicate the number of arrows.`],
                     },
                 ],
@@ -160,13 +168,13 @@ const exp = (function() {
                 questions: [
                     {
                         prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
-                        name: `attnChk3`, 
+                        name: `attnChk4`, 
                         options: [`In the ${settings.gameName_2}, I must indicate the direction of the middle arrow only.`, `In the ${settings.gameName_2}, all arrows will point in the same direction.`],
                     },
                     {
-                        prompt: "<div style='color: rgb(109, 112, 114)'>Which of the following statements is true?</div>", 
-                        name: `attnChk4`, 
-                        options: [`In the ${settings.gameName_2}, I'll have less time to reach the target score.`, `In the ${settings.gameName_2}, I'll have more time to reach the target score.`],
+                        prompt: `<div style='color: rgb(109, 112, 114)'>In the ${settings.gameName_2}, what percent of rounds are players expected to win?</div>`, 
+                        name: `attnChk5`, 
+                        options: [`10%`, `50%`, `90%`],
                     },
                 ],
                 scale_width: 500,
@@ -245,6 +253,13 @@ const exp = (function() {
                         <div class="your-score">Your Score:<br><br><span style="color:red; font-weight:bold">8</span></div>
                         <div class="flanker-text" style="color:red">You lost!</div>
                         </div>`
+                    },
+                ],
+                [
+                    {
+                        type: 'html',
+                        prompt: `<p>The ${settings.gameName_1} is designed to ensure that players win approximately <b>${settings.hitRates[0] * 100}%</b> of their rounds.</p>
+                        <p>Specifically, the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`
                     },
                 ],
             ],
