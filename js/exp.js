@@ -26,7 +26,7 @@ const exp = (function() {
         settings.durationText_2 = "very little time";
     } else if (settings.hitRates[1] == .9) {
         settings.durationText_1 = "a moderate amount of time";
-        settings.durationText_2 = "plent of time";
+        settings.durationText_2 = "plenty of time";
     };
     
 
