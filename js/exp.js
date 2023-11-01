@@ -96,17 +96,17 @@ const exp = (function() {
         <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all the arrows are pointing.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win fewer rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_1} to complete reach round, ensuring that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_2} to complete reach round, ensuring that they reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = `<span style="color: ${settings.hex_1}"><<<<<</span>`;
         text.arrowOrArrows = 'arrows';
         text.pointOrPoints = 'point';
-        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.hex_2} arrows.</p>
+        text.exception1 = `<p>First, in the ${settings.gameName_2}, each cue is made up of ${settings.colors[1]} arrows.</p>
         <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
         <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.hex_2}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win more rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_1} to complete reach round, ensuring that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_2} to complete reach round, ensuring that they reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     };
 
@@ -257,7 +257,7 @@ const exp = (function() {
                 [
                     {
                         type: 'html',
-                        prompt: `<p>If you score less than 10 points when time runs out, you'll see that you lost the round...</p>`
+                        prompt: `<p>If time runs out before you score 10 points, you'll see that you lost the round...</p>`
                     },
                 ],
                 [
