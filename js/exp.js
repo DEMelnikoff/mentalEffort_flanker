@@ -274,7 +274,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p>The ${settings.gameName_1} is designed to ensure that players win approximately <b>${settings.hitRates[0] * 100}%</b> of their rounds.</p>
-                        <p>Specifically, players have ${settings.durationText_1} to complete reach round, ensuring that the target score is reached approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`
+                        <p>Specifically, players have ${settings.durationText_1} to complete reach round, ensuring that they reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`
                     },
                 ],
             ],
