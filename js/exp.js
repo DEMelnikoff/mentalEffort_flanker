@@ -15,6 +15,21 @@ const exp = (function() {
     settings.hitRates[0] = Math.round((settings.hitRates[0] - settings.adjustment) * 100) / 100;
     settings.hitRates[1] = Math.round((settings.hitRates[1] - settings.adjustment) * 100) / 100;
 
+    if (settings.hitRates[0] == .1) {
+        settings.durationText_1 = "very little time";
+        settings.durationText_2 = "a moderate amount of time";
+    } else if (settings.hitRates[0] == .9) {
+        settings.durationText_1 = "plenty of time";
+        settings.durationText_2 = "a moderate amount of time";
+    } else if (settings.hitRates[1] == .1) {
+        settings.durationText_1 = "a moderate amount of time";
+        settings.durationText_2 = "very little time";
+    } else if (settings.hitRates[1] == .9) {
+        settings.durationText_1 = "a moderate amount of time";
+        settings.durationText_2 = "plent of time";
+    };
+    
+
     if (settings.hitRates[0] < settings.hitRates[1]) {
         settings.effort = ['easy', 'hard'];
     } else {
@@ -81,7 +96,7 @@ const exp = (function() {
         <p>Second, the middle arrow always points in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>).</p>
         <p>Therefore, you no longer have to focus exclusively on the middle arrow. You can simply indicate the direction in which all the arrows are pointing.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win fewer rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_1} to complete reach round, ensuring that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     } else if (settings.effort[0] == 'easy') {
         text.example_1 = `<span style="color: ${settings.hex_1}"><<<<<</span>`;
@@ -91,7 +106,7 @@ const exp = (function() {
         <p>Second, you must indicate the direction of the <b>middle arrow only</b>.</p>
         <p>Sometimes, the middle arrow will point in the same direction as the other arrows (e.g., <span style="color: ${settings.hex_2}"><<<<<</span>), and other times it will point in the opposite direction (e.g., <span style="color: ${settings.hex_2}"><<><<</span>). You must indicate the direction of the middle arrow only, regardless of whether it matches the other arrows.</p>`;
         text.exception2 = `<p>The ${settings.gameName_2} is designed to ensure that players win more rounds than in the ${settings.gameName_1}.</p>
-        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
+        <p>Specifically, the ${settings.gameName_2} is designed to ensure that players win <b>${settings.hitRates[1] * 100}%</b> of their rounds; players have ${settings.durationText_1} to complete reach round, ensuring that players reach the target score approximately <b>${settings.hitRates[1] * 100}%</b> of the time.</p>`;
 
     };
 
@@ -259,7 +274,7 @@ const exp = (function() {
                     {
                         type: 'html',
                         prompt: `<p>The ${settings.gameName_1} is designed to ensure that players win approximately <b>${settings.hitRates[0] * 100}%</b> of their rounds.</p>
-                        <p>Specifically, the length of each round was selected to ensure that players reach the target score approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`
+                        <p>Specifically, players have ${settings.durationText_1} to complete reach round, ensuring that the target score is reached approximately <b>${settings.hitRates[0] * 100}%</b> of the time.</p>`
                     },
                 ],
             ],
